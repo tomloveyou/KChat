@@ -1,0 +1,37 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+
+    <!-- Base application theme. -->
+    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorPrimary</item>
+        <item name="android:windowSoftInputMode">adjustPan|stateHidden|stateAlwaysHidden</item>
+        <item name="android:screenOrientation">portrait</item>
+        <!-- 底部导航栏的颜色 -->
+        <item name="android:navigationBarColor" tools:targetApi="lollipop">@color/colorPrimary</item>
+    </style>
+    <style name="PopupAnimation">
+        <item name="android:windowEnterAnimation">@anim/push_down_in</item>
+        <item name="android:windowExitAnimation">@anim/push_down_out</item>
+    </style>
+    <style name="AppTheme.NoActionBar">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+    </style>
+
+    <style name="operation_popshow_anim_style_down">
+        <item name="android:windowEnterAnimation">@anim/popshow_operation_anim_down</item>
+        <item name="android:windowExitAnimation">@anim/popshow_operation_anim_up</item>
+    </style>
+
+    <style name="operation_popshow_anim_style_up">
+        <item name="android:windowEnterAnimation">@anim/popshow_operation_anim_up</item>
+        <item name="android:windowExitAnimation">@anim/popshow_operation_anim_down</item>
+    </style>
+
+    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+
+    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+
+</resources>
