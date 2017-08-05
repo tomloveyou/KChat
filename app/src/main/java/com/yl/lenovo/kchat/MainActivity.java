@@ -51,8 +51,7 @@ import com.yl.lenovo.kchat.utis.AppCacheDirUtil;
 import com.yl.lenovo.kchat.utis.SPUtils;
 import com.yl.lenovo.kchat.widget.CustomOperationPopWindow;
 import com.yl.lenovo.kchat.xlistview.XListView;
-import com.zhy.adapter.abslistview.CommonAdapter;
-import com.zhy.adapter.abslistview.ViewHolder;
+
 
 import java.io.BufferedOutputStream;
 import java.io.File;
@@ -86,7 +85,7 @@ public class MainActivity extends AppCompatActivity
     NavigationView navigationView;
 
     private List<Dynamic> data = new ArrayList<>();
-    private CommonAdapter<String> item_adapter;
+
     FloatingActionButton fab;
     private List<String> item_data = new ArrayList<>();
     private static final int REQUEST_CODE_PERMISSION_PHOTO_PREVIEW = 1;
@@ -299,7 +298,9 @@ public class MainActivity extends AppCompatActivity
         } else if (id == R.id.nav_share) {
 
         } else if (id == R.id.nav_send) {
-
+            SPUtils.remove("userinfo");
+            startActivity(new Intent(MainActivity.this, LoginActivity.class));
+            finish();
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);

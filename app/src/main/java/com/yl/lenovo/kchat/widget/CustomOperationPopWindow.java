@@ -18,6 +18,7 @@ import com.yl.lenovo.kchat.utis.DensityUtil;
 import com.zhy.adapter.abslistview.CommonAdapter;
 import com.zhy.adapter.abslistview.ViewHolder;
 
+
 import java.util.ArrayList;
 import java.util.List;
 

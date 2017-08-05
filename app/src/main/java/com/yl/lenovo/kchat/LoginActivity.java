@@ -63,7 +63,7 @@ private  TextView tv_regist;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (SPUtils.getString("userinfo")!=null){
+        if (SPUtils.getString("userinfo")!=null&&!"".equals(SPUtils.getString("userinfo"))){
             startActivity(new Intent(LoginActivity.this,MainActivity.class));
             finish();
             return;
