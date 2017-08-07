@@ -36,6 +36,7 @@ import com.squareup.picasso.Picasso;
 import com.yl.lenovo.kchat.mvp.contract.UserContract;
 import com.yl.lenovo.kchat.mvp.presenter.UserPresenter;
 import com.yl.lenovo.kchat.utis.SPUtils;
+import com.yl.lenovo.kchat.widget.dialog.DialogUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -84,6 +85,7 @@ public class RegistActivity extends AppCompatActivity implements UserContract.Us
             @Override
             public void onClick(View view) {
                 if (verify()){
+                    DialogUtils.showProgressDialog(RegistActivity.this,"注册中，请稍后……");
                     presenter.registUser(mEmailView.getText().toString(), mPasswordView.getText().toString());
                 }
             }
@@ -124,7 +126,7 @@ public class RegistActivity extends AppCompatActivity implements UserContract.Us
 
     @Override
     public void registsuccess() {
-      
+        DialogUtils.dismiss();
         finish();
     }
 

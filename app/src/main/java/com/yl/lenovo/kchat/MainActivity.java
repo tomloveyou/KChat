@@ -94,7 +94,8 @@ public class MainActivity extends AppCompatActivity
     private BGANinePhotoLayout mCurrentClickNpl;
     private FileContract.FileUploadPresenter presenter = new FilePresenterImpl(this);
     private UserContract.UserPresenter userPresenter = new UserPresenter(this);
-
+    private int limit = 10; // 每页的数据是10条
+    private int curPage = 0; // 当前页的编号，从0开始
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -183,7 +184,10 @@ public class MainActivity extends AppCompatActivity
         mMomentRv.setLayoutManager(manager);
         mMomentRv.setAdapter(mMomentAdapter);
         BmobQuery<Dynamic> query = new BmobQuery<Dynamic>();
+        query.order("updatedAt");
 
+        query.setLimit(limit);
+        query.setSkip(curPage);
         query.findObjects(new FindListener<Dynamic>() {
             @Override
             public void done(List<Dynamic> object, BmobException e) {
@@ -194,6 +198,9 @@ public class MainActivity extends AppCompatActivity
 
             }
         });
+
+    }
+    private void  setmenuicon(){
 
     }
 
@@ -275,6 +282,7 @@ public class MainActivity extends AppCompatActivity
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
+            startActivity(new Intent(MainActivity.this,MessageActivity.class));
             return true;
         }
 

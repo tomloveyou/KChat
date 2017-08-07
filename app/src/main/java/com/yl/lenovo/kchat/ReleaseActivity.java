@@ -19,6 +19,7 @@ import android.widget.LinearLayout;
 import com.yl.lenovo.kchat.bean.Dynamic;
 import com.yl.lenovo.kchat.mvp.contract.FileContract;
 import com.yl.lenovo.kchat.mvp.presenter.FilePresenterImpl;
+import com.yl.lenovo.kchat.widget.dialog.DialogUtils;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -74,6 +75,7 @@ private FileContract.FileUploadPresenter presenter=new FilePresenterImpl(this);
             public boolean onMenuItemClick(MenuItem item) {
 
                 if (item.getItemId() == R.id.action_release) {
+                    DialogUtils.showProgressDialog(ReleaseActivity.this,"发布中，请稍后……");
                     presenter.multiupload(mPhotosSnpl.getData().toArray(new String[mPhotosSnpl.getData().size()]));
                 }
                 return true;
@@ -97,6 +99,7 @@ private FileContract.FileUploadPresenter presenter=new FilePresenterImpl(this);
         dynamic.save(new SaveListener<String>() {
             @Override
             public void done(String s, BmobException e) {
+                DialogUtils.dismiss();
                 error("成功发布");
                 finish();
             }

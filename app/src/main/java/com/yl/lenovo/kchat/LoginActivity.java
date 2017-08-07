@@ -38,6 +38,7 @@ import com.squareup.picasso.Picasso;
 import com.yl.lenovo.kchat.mvp.contract.UserContract;
 import com.yl.lenovo.kchat.mvp.presenter.UserPresenter;
 import com.yl.lenovo.kchat.utis.SPUtils;
+import com.yl.lenovo.kchat.widget.dialog.DialogUtils;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -56,15 +57,15 @@ public class LoginActivity extends AppCompatActivity implements UserContract.Use
     // UI references.
     private AutoCompleteTextView mEmailView;
     private EditText mPasswordView;
-private  TextView tv_regist;
+    private TextView tv_regist;
     private ImageView imageView;
     private UserContract.UserPresenter presenter = new UserPresenter(this);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (SPUtils.getString("userinfo")!=null&&!"".equals(SPUtils.getString("userinfo"))){
-            startActivity(new Intent(LoginActivity.this,MainActivity.class));
+        if (SPUtils.getString("userinfo") != null && !"".equals(SPUtils.getString("userinfo"))) {
+            startActivity(new Intent(LoginActivity.this, MainActivity.class));
             finish();
             return;
         }
@@ -72,7 +73,7 @@ private  TextView tv_regist;
         setContentView(R.layout.activity_login);
         // Set up the login form.
         mEmailView = (AutoCompleteTextView) findViewById(R.id.email);
-        tv_regist= (TextView) findViewById(R.id.tv_regist);
+        tv_regist = (TextView) findViewById(R.id.tv_regist);
         imageView = (ImageView) findViewById(R.id.login_background_img);
         mPasswordView = (EditText) findViewById(R.id.password);
         Picasso.with(LoginActivity.this).load(SPUtils.getString("login_background")).into(imageView);
@@ -80,8 +81,10 @@ private  TextView tv_regist;
             @Override
             public boolean onEditorAction(TextView textView, int id, KeyEvent keyEvent) {
                 if (id == R.id.login || id == EditorInfo.IME_NULL) {
-                    if (verify())
-                        presenter.login(mEmailView.getText().toString(), mPasswordView.getText().toString());
+                    if (verify()) {
+                        DialogUtils.showProgressDialog(LoginActivity.this, "登录中，请稍后……");
+                    }
+                    presenter.login(mEmailView.getText().toString(), mPasswordView.getText().toString());
                     return true;
                 }
                 return false;
@@ -93,18 +96,19 @@ private  TextView tv_regist;
             @Override
             public void onClick(View view) {
                 if (verify())
-                presenter.login(mEmailView.getText().toString(), mPasswordView.getText().toString());
+                    presenter.login(mEmailView.getText().toString(), mPasswordView.getText().toString());
             }
         });
         tv_regist.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(LoginActivity.this,RegistActivity.class));
+                startActivity(new Intent(LoginActivity.this, RegistActivity.class));
             }
         });
 
 
     }
+
 
     private boolean verify() {
         if (TextUtils.isEmpty(mEmailView.getText())) {
@@ -122,6 +126,7 @@ private  TextView tv_regist;
 
     @Override
     public void loginsuccess() {
+        DialogUtils.dismiss();
         startActivity(new Intent(this, MainActivity.class));
         finish();
     }
