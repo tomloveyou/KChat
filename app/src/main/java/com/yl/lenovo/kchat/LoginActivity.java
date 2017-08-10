@@ -66,7 +66,7 @@ public class LoginActivity extends AppCompatActivity implements UserContract.Use
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (SPUtils.getString("userinfo") != null && !"".equals(SPUtils.getString("userinfo"))) {
-            startActivity(new Intent(LoginActivity.this, MainActivity.class));
+            startActivity(new Intent(LoginActivity.this, TravelActivity.class));
             finish();
             return;
         }
