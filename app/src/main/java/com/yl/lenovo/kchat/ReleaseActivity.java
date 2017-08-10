@@ -1,6 +1,7 @@
 package com.yl.lenovo.kchat;
 
 import android.Manifest;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Environment;
 import android.support.annotation.NonNull;
@@ -16,6 +17,14 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 
 
+import com.smile.filechoose.api.ChosenFile;
+import com.smile.filechoose.api.ChosenImage;
+import com.smile.filechoose.api.FileChooserListener;
+import com.smile.filechoose.api.FileChooserManager;
+import com.smile.filechoose.api.ImageChooserListener;
+import com.smile.filechoose.api.ImageChooserManager;
+import com.smile.filechoose.api.utils.ImageChooserBuilder;
+import com.smile.filechoose.api.utils.VideoChooserBuilder;
 import com.yl.lenovo.kchat.bean.Dynamic;
 import com.yl.lenovo.kchat.mvp.contract.FileContract;
 import com.yl.lenovo.kchat.mvp.presenter.FilePresenterImpl;

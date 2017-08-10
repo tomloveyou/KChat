@@ -37,6 +37,7 @@ import android.widget.Toast;
 import com.squareup.picasso.Picasso;
 import com.yl.lenovo.kchat.mvp.contract.UserContract;
 import com.yl.lenovo.kchat.mvp.presenter.UserPresenter;
+import com.yl.lenovo.kchat.stick.TravelActivity;
 import com.yl.lenovo.kchat.utis.SPUtils;
 import com.yl.lenovo.kchat.widget.dialog.DialogUtils;
 

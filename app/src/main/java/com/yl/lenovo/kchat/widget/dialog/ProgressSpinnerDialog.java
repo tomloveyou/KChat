@@ -35,8 +35,7 @@ public class ProgressSpinnerDialog extends Dialog {
 					show();
 				}
 				mHandler.postDelayed(this, 1000);
-			}
-			else {//如果剩余时间小于等于0
+			}else {//如果剩余时间小于等于0
 				dismiss();
 			}
 		}

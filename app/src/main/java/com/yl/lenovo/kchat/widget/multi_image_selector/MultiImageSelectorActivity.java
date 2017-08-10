@@ -16,12 +16,14 @@ import com.yl.lenovo.kchat.R;
 import java.io.File;
 import java.util.ArrayList;
 
+import cn.bingoogolapple.photopicker.activity.BGAPPToolbarActivity;
+
 /**
  * 多图选择
  * Created by Nereo on 2015/4/7.
  * Updated by nereo on 2016/1/19.
  */
-public class MultiImageSelectorActivity extends AppCompatActivity implements MultiImageSelectorFragment.Callback{
+public class MultiImageSelectorActivity extends BGAPPToolbarActivity implements MultiImageSelectorFragment.Callback{
 
     /**
      * 最大图片选择次数，int类型，默认9
@@ -60,9 +62,10 @@ public class MultiImageSelectorActivity extends AppCompatActivity implements Mul
 
     /** 拍照时存储拍照结果的临时文件 */
     private File mTmpFile;
+
+
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+    protected void initView(Bundle savedInstanceState) {
         setContentView(R.layout.activity_default);
 
         Intent intent = getIntent();
@@ -110,6 +113,16 @@ public class MultiImageSelectorActivity extends AppCompatActivity implements Mul
                 }
             }
         });
+    }
+
+    @Override
+    protected void setListener() {
+
+    }
+
+    @Override
+    protected void processLogic(Bundle savedInstanceState) {
+
     }
 
     @Override

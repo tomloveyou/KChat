@@ -16,6 +16,7 @@
         android:contentDescription="@string/app_name" />
 
     <TextView
+        android:visibility="gone"
         android:id="@+id/id_tv_loadingmsg"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
