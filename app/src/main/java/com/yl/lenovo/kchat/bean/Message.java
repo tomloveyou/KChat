@@ -1,5 +1,8 @@
 package com.yl.lenovo.kchat.bean;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import cn.bmob.v3.BmobObject;
 
 /**
@@ -11,7 +14,15 @@ public class Message extends BmobObject {
     private String content;
 
     public String getAlert() {
-        return alert;
+        String result="";
+        try {
+            JSONObject object=new JSONObject(alert);
+            result= object.optString("alert");
+        } catch (JSONException e) {
+            e.printStackTrace();
+            result= alert;
+        }
+        return result;
     }
 
     public void setAlert(String alert) {
@@ -19,7 +30,15 @@ public class Message extends BmobObject {
     }
 
     public String getContent() {
-        return content;
+        String result="";
+        try {
+            JSONObject object=new JSONObject(alert);
+            result= object.optString("content");
+        } catch (JSONException e) {
+            e.printStackTrace();
+            result= content;
+        }
+        return result;
     }
 
     public void setContent(String content) {

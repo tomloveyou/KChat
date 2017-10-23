@@ -10,6 +10,8 @@ import com.google.gson.Gson;
 import com.yl.lenovo.kchat.bean.MyUser;
 import com.yl.lenovo.kchat.utis.SPUtils;
 
+import net.sqlcipher.database.SQLiteDatabase;
+
 import cn.bmob.push.BmobPush;
 import cn.bmob.v3.Bmob;
 import cn.bmob.v3.BmobInstallation;
@@ -29,9 +31,10 @@ public class KChatApp extends Application {
         super.onCreate();
         application = this;
         // 初始化参数依次为 this, AppId, AppKey
-        Bmob.initialize(this, "115e6fffae7337309a4de3668ade696e", "demo");
+        Bmob.initialize(this, "115e6fffae7337309a4de3668ade696e", "kchat");
         // 使用推送服务时的初始化操作
         BmobInstallation.getCurrentInstallation().save();
+        SQLiteDatabase.loadLibs(this);
 // 启动推送服务
         BmobPush.startWork(this);
         sp = getSharedPreferences(SPUtils.SP_NAME, Context.MODE_PRIVATE);

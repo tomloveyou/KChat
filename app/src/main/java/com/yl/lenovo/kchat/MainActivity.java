@@ -47,6 +47,7 @@ import com.yl.lenovo.kchat.mvp.contract.FileContract;
 import com.yl.lenovo.kchat.mvp.contract.UserContract;
 import com.yl.lenovo.kchat.mvp.presenter.FilePresenterImpl;
 import com.yl.lenovo.kchat.mvp.presenter.UserPresenter;
+import com.yl.lenovo.kchat.stick.TravelActivity;
 import com.yl.lenovo.kchat.utis.AppCacheDirUtil;
 import com.yl.lenovo.kchat.utis.SPUtils;
 import com.yl.lenovo.kchat.widget.CustomOperationPopWindow;
@@ -91,6 +92,8 @@ public class MainActivity extends AppCompatActivity
     private static final int REQUEST_CODE_PERMISSION_PHOTO_PREVIEW = 1;
     private static final int REQUEST_CODE_ADD_MOMENT = 1;
 
+
+
     private BGANinePhotoLayout mCurrentClickNpl;
     private FileContract.FileUploadPresenter presenter = new FilePresenterImpl(this);
     private UserContract.UserPresenter userPresenter = new UserPresenter(this);
@@ -126,9 +129,9 @@ public class MainActivity extends AppCompatActivity
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity(new Intent(MainActivity.this, ReleaseActivity.class));
-            }
-        });
+                startActivity(new Intent(MainActivity.this, ItemListActivity.class));
+    }
+});
         mMomentAdapter = new MomentAdapter(mMomentRv);
 
         mMomentRv.addOnScrollListener(new BGARVOnScrollListener(this));
@@ -300,7 +303,7 @@ public class MainActivity extends AppCompatActivity
         } else if (id == R.id.nav_gallery) {
 
         } else if (id == R.id.nav_slideshow) {
-
+            startActivity(new Intent(MainActivity.this, TravelActivity.class));
         } else if (id == R.id.nav_manage) {
 
         } else if (id == R.id.nav_share) {

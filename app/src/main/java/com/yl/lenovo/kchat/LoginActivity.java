@@ -34,18 +34,27 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 
+import com.lzy.imagepicker.ImagePicker;
 import com.squareup.picasso.Picasso;
+import com.yl.lenovo.kchat.bean.SplashAndLogin;
 import com.yl.lenovo.kchat.mvp.contract.UserContract;
 import com.yl.lenovo.kchat.mvp.presenter.UserPresenter;
 import com.yl.lenovo.kchat.stick.TravelActivity;
 import com.yl.lenovo.kchat.utis.SPUtils;
 import com.yl.lenovo.kchat.widget.dialog.DialogUtils;
 
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
+
+import cn.bmob.v3.BmobQuery;
+import cn.bmob.v3.exception.BmobException;
+import cn.bmob.v3.listener.QueryListener;
 
 import static android.Manifest.permission.READ_CONTACTS;
 
@@ -66,7 +75,7 @@ public class LoginActivity extends AppCompatActivity implements UserContract.Use
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (SPUtils.getString("userinfo") != null && !"".equals(SPUtils.getString("userinfo"))) {
-            startActivity(new Intent(LoginActivity.this, TravelActivity.class));
+            startActivity(new Intent(LoginActivity.this, MainActivity.class));
             finish();
             return;
         }
@@ -77,12 +86,28 @@ public class LoginActivity extends AppCompatActivity implements UserContract.Use
         tv_regist = (TextView) findViewById(R.id.tv_regist);
         imageView = (ImageView) findViewById(R.id.login_background_img);
         mPasswordView = (EditText) findViewById(R.id.password);
-        Picasso.with(LoginActivity.this).load(SPUtils.getString("login_background")).into(imageView);
+
+
+        BmobQuery<SplashAndLogin> query = new BmobQuery<SplashAndLogin>();
+        query.getObject("7037c41db7", new QueryListener<SplashAndLogin>() {
+
+            @Override
+            public void done(SplashAndLogin object, BmobException e) {
+                if(e==null){
+                    Picasso.with(LoginActivity.this).load(object.getLogin_url().getFileUrl()).into(imageView);
+
+                }else{
+                    Log.i("bmob","失败："+e.getMessage()+","+e.getErrorCode());
+                }
+            }
+
+        });
         mPasswordView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView textView, int id, KeyEvent keyEvent) {
                 if (id == R.id.login || id == EditorInfo.IME_NULL) {
                     if (verify()) {
+
                         DialogUtils.showProgressDialog(LoginActivity.this, "登录中，请稍后……");
                     }
                     presenter.login(mEmailView.getText().toString(), mPasswordView.getText().toString());

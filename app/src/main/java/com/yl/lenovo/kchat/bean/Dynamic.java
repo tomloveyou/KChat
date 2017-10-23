@@ -3,6 +3,8 @@ package com.yl.lenovo.kchat.bean;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+
+
 import java.util.List;
 
 import cn.bmob.v3.BmobObject;
@@ -13,13 +15,12 @@ import cn.bmob.v3.datatype.BmobFile;
  */
 
 public class Dynamic extends BmobObject  {
+
     private String user_avator;
     private String title;
     private String content;
     private List<String>img_list;
     private String ower;
-
-
 
 
 

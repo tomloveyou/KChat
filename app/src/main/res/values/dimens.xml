@@ -28,5 +28,8 @@
     <!-- divider -->
     <color name="divider_1">#e2e2e2</color>
     <color name="divider_2">#e6e6e6</color>
+    <dimen name="app_bar_height">200dp</dimen>
+    <dimen name="item_width">200dp</dimen>
+    <dimen name="text_margin">16dp</dimen>
 
 </resources>

@@ -1,5 +1,7 @@
 package com.yl.lenovo.kchat.bean;
 
+
+
 import cn.bmob.v3.BmobObject;
 import cn.bmob.v3.datatype.BmobFile;
 
@@ -8,6 +10,7 @@ import cn.bmob.v3.datatype.BmobFile;
  */
 
 public class SplashAndLogin extends BmobObject {
+
     private BmobFile splash_url;
     private BmobFile login_url;
 

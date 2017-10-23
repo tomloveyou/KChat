@@ -21,6 +21,7 @@ public class MessageActivity extends BGAPPToolbarActivity implements XListView.I
     private XListView pub_listview;
     private List<Message> data = new ArrayList<>();
     private CommonAdapter<Message> messageCommonAdapter;
+    private int pagenumber=0;
 
     @Override
     protected void initView(Bundle savedInstanceState) {
@@ -41,16 +42,22 @@ public class MessageActivity extends BGAPPToolbarActivity implements XListView.I
     private void load() {
 
         BmobQuery<Message> query = new BmobQuery<Message>();
+        query.setLimit(10);
+        query.setSkip(pagenumber);
         query.findObjects(new FindListener<Message>() {
             @Override
             public void done(List<Message> list, BmobException e) {
+                pagenumber+=10;
                 pub_listview.stopRefresh();
                 pub_listview.stopLoadMore();
                 if (e == null) {
                     data.addAll(list);
-
+                    messageCommonAdapter.notifyDataSetChanged();
                 }
-                messageCommonAdapter.notifyDataSetChanged();
+                if (list.size()==0){
+                    pub_listview.setLoadEnd();
+                }
+
             }
         });
     }
@@ -70,6 +77,7 @@ public class MessageActivity extends BGAPPToolbarActivity implements XListView.I
 
     @Override
     public void onRefresh() {
+        pagenumber=0;
         data.clear();
 
         load();

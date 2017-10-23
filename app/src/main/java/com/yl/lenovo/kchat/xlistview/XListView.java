@@ -160,6 +160,10 @@ public class XListView extends ListView implements OnScrollListener {
 			});
 		}
 	}
+	public void setLoadEnd(){
+		mFooterView.show();
+		mFooterView.setState(XListViewFooter.STATE_FINISH);
+	}
 
 	/**
 	 * stop refresh, reset header view.

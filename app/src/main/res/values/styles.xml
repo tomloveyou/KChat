@@ -1,6 +1,6 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
 
-    <!-- Base application theme. -->
+    <!--  application theme. -->
     <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
         <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/colorPrimary</item>
@@ -9,12 +9,15 @@
         <item name="android:windowSoftInputMode">adjustPan|stateHidden|stateAlwaysHidden</item>
         <item name="android:screenOrientation">portrait</item>
         <!-- 底部导航栏的颜色 -->
-        <item name="android:navigationBarColor" tools:targetApi="lollipop">@color/colorPrimary</item>
+        <item name="android:navigationBarColor" tools:targetApi="lollipop">@color/colorPrimary
+        </item>
     </style>
+
     <style name="PopupAnimation">
         <item name="android:windowEnterAnimation">@anim/push_down_in</item>
         <item name="android:windowExitAnimation">@anim/push_down_out</item>
     </style>
+
     <style name="AppTheme.NoActionBar">
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
@@ -37,4 +40,8 @@
     <style name="custom_progress_dialog" parent="@android:style/Theme.Light.Panel">
         <item name="android:windowAnimationStyle">@android:style/Animation.Dialog</item>
     </style>
+
+    <style name="AppTheme.NoActionBar.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+
+    <style name="AppTheme.NoActionBar.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 </resources>

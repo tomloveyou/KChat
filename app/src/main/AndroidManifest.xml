@@ -6,6 +6,7 @@
     <uses-permission android:name="android.permission.GET_ACCOUNTS" />
     <uses-permission android:name="android.permission.READ_PROFILE" />
     <uses-permission android:name="android.permission.READ_CONTACTS" />
+    <uses-permission android:name="android.permission.READ_PHONE_STATE"/>
     <!-- 基础模块（必须加入以下声明）START -->
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.INTERNET" />
@@ -41,7 +42,7 @@
         <!-- 用于进程保活 -->
         <service
             android:name="cn.bmob.push.lib.service.PushNotifyService"
-            android:process=":bmobpush"></service>
+            android:process=":bmobpush" />
 
         <receiver android:name="cn.bmob.push.PushReceiver">
             <intent-filter>
@@ -106,12 +107,27 @@
             android:name=".WelcomeGuideActivity"
             android:exported="true"
             android:screenOrientation="portrait" />
-        <activity android:name=".ReleaseActivity"
-            android:exported="true"/>
-        <activity android:name=".widget.multi_image_selector.MultiImageSelectorActivity"
+        <activity
+            android:name=".ReleaseActivity"
+            android:exported="true" />
+        <activity
+            android:name=".widget.multi_image_selector.MultiImageSelectorActivity"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".MessageActivity"></activity>
-        <activity android:name=".stick.TravelActivity"/>
+        <activity android:name=".MessageActivity" />
+        <activity android:name=".stick.TravelActivity" />
+        <activity
+            android:name=".ItemListActivity"
+            android:label="@string/title_item_list"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
+        <activity
+            android:name=".ItemDetailActivity"
+            android:label="@string/title_item_detail"
+            android:parentActivityName=".ItemListActivity"
+            android:theme="@style/AppTheme.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.yl.lenovo.kchat.ItemListActivity" />
+        </activity>
     </application>
 
 </manifest>
