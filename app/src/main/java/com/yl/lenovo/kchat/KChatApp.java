@@ -7,6 +7,8 @@ import android.content.SharedPreferences;
 
 import com.google.gson.Gson;
 
+import com.tencent.bugly.Bugly;
+import com.tencent.bugly.crashreport.CrashReport;
 import com.yl.lenovo.kchat.bean.MyUser;
 import com.yl.lenovo.kchat.utis.SPUtils;
 
@@ -35,6 +37,8 @@ public class KChatApp extends Application {
         // 使用推送服务时的初始化操作
         BmobInstallation.getCurrentInstallation().save();
         SQLiteDatabase.loadLibs(this);
+        Bugly.init(getApplicationContext(), "36c94d9d95", false);
+
 // 启动推送服务
         BmobPush.startWork(this);
         sp = getSharedPreferences(SPUtils.SP_NAME, Context.MODE_PRIVATE);

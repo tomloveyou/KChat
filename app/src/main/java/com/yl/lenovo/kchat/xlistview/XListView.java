@@ -162,6 +162,7 @@ public class XListView extends ListView implements OnScrollListener {
 	}
 	public void setLoadEnd(){
 		mFooterView.show();
+		mFooterView.setOnClickListener(null);
 		mFooterView.setState(XListViewFooter.STATE_FINISH);
 	}
 

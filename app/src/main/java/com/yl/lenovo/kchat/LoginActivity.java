@@ -34,7 +34,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 
-import com.lzy.imagepicker.ImagePicker;
 import com.squareup.picasso.Picasso;
 import com.yl.lenovo.kchat.bean.SplashAndLogin;
 import com.yl.lenovo.kchat.mvp.contract.UserContract;

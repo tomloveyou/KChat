@@ -40,6 +40,7 @@ android {
     }
 }
 
+
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
@@ -50,7 +51,6 @@ dependencies {
     // -------------------- 以上4个库是必须依赖的 ----------------------------
     // 目前支持常见的 4 种图片加载库，必须在下面四个图片加载库中选择一个添加依赖
     //    compile 'com.github.bumptech.glide:glide:3.7.0'
-    compile project(':library')
 
     // ButterKnife
     // Glide
@@ -69,9 +69,12 @@ dependencies {
     compile 'com.jakewharton:butterknife:8.5.1'
     compile 'com.github.bumptech.glide:glide:3.7.0'
     testCompile 'junit:junit:4.12'
-    annotationProcessor 'com.jakewharton:butterknife-compiler:8.5.1'
-    compile 'com.lzy.widget:imagepicker:0.5.5'  //指定版本
+    // annotationProcessor 'com.jakewharton:butterknife-compiler:8.5.1'
+    // compile 'com.lzy.widget:imagepicker:0.5.5'  //指定版本
     //compile 'com.github.moduth:blockcanary-android:1.2.1'
 
-
+    compile 'com.tencent.bugly:crashreport_upgrade:1.2.0'
+//其中latest.release指代最新版本号，也可以指定明确的版本号，例如1.2.0
+    compile 'com.tencent.bugly:nativecrashreport:2.2.0'
+    //其中latest.release指代最新版本号，也可以指定明确的版本号，例如2.2.0
 }
