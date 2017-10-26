@@ -11,11 +11,13 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.WindowManager;
 import android.widget.ImageView;
 
 import com.google.gson.Gson;
 import com.squareup.picasso.Picasso;
 import com.yl.lenovo.kchat.bean.SplashAndLogin;
+import com.yl.lenovo.kchat.utis.NetUtils;
 import com.yl.lenovo.kchat.utis.SPUtils;
 import com.yl.lenovo.kchat.utis.database.MyDatabaseStartImgHelper;
 
@@ -36,21 +38,38 @@ import cn.bmob.v3.listener.QueryListener;
 public class SplashActivity extends Activity {
     private ImageView imageView;
     private SQLiteDatabase db;
+    private Cursor cursor;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         // 判断是否是第一次开启应用
+       getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         MyDatabaseStartImgHelper databaseStartImgHelper = new MyDatabaseStartImgHelper(this, "firstinit.db", null, 1);
         db = databaseStartImgHelper.getWritableDatabase("5123789");
-        Cursor cursor = db.query("StartImg", new String[]{"local_splash_url","splash_url"}, null, null, null, null, null);
 
-        if (cursor!=null){
-            if (cursor.moveToNext()){
-                Bitmap bitmap = BitmapFactory.decodeFile(cursor.getString(0));
-                Drawable  drawable = new BitmapDrawable(null, bitmap);
+        cursor = db.query("StartImg", new String[]{"local_splash_url", "splash_url"}, null, null, null, null, null);
+
+        if (cursor != null) {
+            if (cursor.moveToNext()) {
+                String path = cursor.getString(0);
+                Bitmap bitmap = null;
+                if (path != null) {
+                    bitmap = BitmapFactory.decodeFile(path);
+                } else {
+                    bitmap = BitmapFactory.decodeResource(getResources(), R.mipmap.splash);
+                }
+                Drawable drawable = new BitmapDrawable(null, bitmap);
+                getWindow().setBackgroundDrawable(drawable);
+            } else {
+                Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.bg_btn_trans_round_n);
+                Drawable drawable = new BitmapDrawable(null, bitmap);
                 getWindow().setBackgroundDrawable(drawable);
             }
+        } else {
+            Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.bg_btn_trans_round_n);
+            Drawable drawable = new BitmapDrawable(null, bitmap);
+            getWindow().setBackgroundDrawable(drawable);
         }
 
         boolean isFirstOpen = SPUtils.getBoolean("FIRST_OPEN");
@@ -67,21 +86,7 @@ public class SplashActivity extends Activity {
         }
         setContentView(R.layout.activity_splash);
         imageView = (ImageView) findViewById(R.id.image_splash_background);
-        if (cursor.moveToNext()){
-            Picasso.with(SplashActivity.this).load(cursor.getString(1)).into(imageView);
-            BmobFile bmobfile = new BmobFile(cursor.getString(1), "", cursor.getString(1));
-            downloadFile(bmobfile);
-
-            imageView.postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    startActivity(new Intent(SplashActivity.this, LoginActivity.class));
-                    finish();
-                }
-            }, 2000);
-        }else {
-            getImgData();
-        }
+        getImgData();
 
 
     }
@@ -101,13 +106,28 @@ public class SplashActivity extends Activity {
                 if (e == null) {
                     ContentValues values = new ContentValues();
                     values.put("local_splash_url", savePath);
-                    db.insert("StartImg", null, values);
+
+                    if (cursor.getString(0)!=null){
+                        db.insert("StartImg", null,values);
+                    }else {
+                        db.update("StartImg", values,null ,null);
+                    }
+
 
 
                     //toast("下载成功,保存路径:"+savePath);
                 } else {
                     //toast("下载失败："+e.getErrorCode()+","+e.getMessage());
                 }
+                imageView.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        startActivity(new Intent(SplashActivity.this, LoginActivity.class));
+                        cursor.close();
+                        db.close();
+                        finish();
+                    }
+                }, 2000);
             }
 
             @Override
@@ -127,22 +147,60 @@ public class SplashActivity extends Activity {
             public void done(SplashAndLogin object, BmobException e) {
                 if (e == null) {
 
-                    ContentValues values = new ContentValues();
-                    values.put("splash_url", object.getSplash_url().getFileUrl());
-                    values.put("login_url", object.getLogin_url().getFileUrl());
-                    db.insert("StartImg", null, values);
-                    Picasso.with(SplashActivity.this).load(object.getSplash_url().getFileUrl()).into(imageView);
-                    imageView.postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            startActivity(new Intent(SplashActivity.this, LoginActivity.class));
-                            finish();
+                    if (cursor.moveToNext()) {
+                        if (!object.getSplash_url().getFileUrl().equals(cursor.getString(1))) {
+                            ContentValues values = new ContentValues();
+                            values.put("splash_url", object.getSplash_url().getFileUrl());
+                            db.update("StartImg", values,null,null);
+                            BmobFile bmobfile = new BmobFile("splash_img.jpg", "", object.getSplash_url().getFileUrl());
+                            downloadFile(bmobfile);
                         }
-                    }, 2000);
+                    } else {
+                        ContentValues values = new ContentValues();
+                        values.put("splash_url", object.getSplash_url().getFileUrl());
+                        db.insert("StartImg", null, values);
+                        BmobFile bmobfile = new BmobFile("splash_img.jpg", "", object.getSplash_url().getFileUrl());
+                        downloadFile(bmobfile);
+
+                    }
+                    Picasso.with(SplashActivity.this).load(object.getSplash_url().getFileUrl()).into(imageView);
+
+
+
                 } else {
-                    Log.i("bmob", "失败：" + e.getMessage() + "," + e.getErrorCode());
+                    String img_path = null;
+
+                    try {
+                        img_path = cursor.getString(1);
+                    } catch (Exception e1) {
+                        img_path = null;
+                        Bitmap bitmap = BitmapFactory.decodeFile(cursor.getString(0));
+                        imageView.setImageBitmap(bitmap);
+                    }
+
+                    if (img_path == null) {
+                        Bitmap bitmap = BitmapFactory.decodeFile(cursor.getString(0));
+                        imageView.setImageBitmap(bitmap);
+
+                        // Picasso.with(SplashActivity.this).load(R.mipmap.smoothlistview_arrow).into(imageView);
+                    } else {
+                        Picasso.with(SplashActivity.this).load(img_path).into(imageView);
+                    }
+
+
                 }
+                imageView.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        startActivity(new Intent(SplashActivity.this, LoginActivity.class));
+                        cursor.close();
+                        db.close();
+                        finish();
+                    }
+                }, 2000);
+
             }
+
 
         });
     }

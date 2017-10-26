@@ -8,8 +8,8 @@ android {
         applicationId "com.yl.lenovo.kchat"
         minSdkVersion 15
         targetSdkVersion 25
-        versionCode 1
-        versionName "1.0"
+        versionCode 3
+        versionName "1.2"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
 
     }
@@ -69,8 +69,8 @@ dependencies {
     compile 'com.jakewharton:butterknife:8.5.1'
     compile 'com.github.bumptech.glide:glide:3.7.0'
     testCompile 'junit:junit:4.12'
-    // annotationProcessor 'com.jakewharton:butterknife-compiler:8.5.1'
-    // compile 'com.lzy.widget:imagepicker:0.5.5'  //指定版本
+    annotationProcessor 'com.jakewharton:butterknife-compiler:8.5.1'
+    //compile 'com.lzy.widget:imagepicker:0.5.5'  //指定版本
     //compile 'com.github.moduth:blockcanary-android:1.2.1'
 
     compile 'com.tencent.bugly:crashreport_upgrade:1.2.0'

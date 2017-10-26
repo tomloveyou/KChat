@@ -12,7 +12,12 @@ import net.sqlcipher.database.SQLiteOpenHelper;
 
 public class MyDatabaseStartImgHelper extends SQLiteOpenHelper {
 
-    public static final String CREATE_TABLE = "create table StartImg(login_url text,regist_url text,splash_url text,local_splash_url text)";
+    public static final String CREATE_TABLE = "create table StartImg(login_url text," +
+            "local_login_url text" +
+            ",regist_url text," +
+            "local_regist_url text," +
+            "splash_url text," +
+            "local_splash_url text)";
 
     public MyDatabaseStartImgHelper(Context context, String name, SQLiteDatabase.CursorFactory factory, int version) {
         super(context, name, factory, version);
