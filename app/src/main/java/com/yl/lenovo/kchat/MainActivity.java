@@ -130,6 +130,7 @@ public class MainActivity extends AppCompatActivity
         item_data.add("点钟");
         item_data.add("点钟");
         item_data.add("点钟");
+
         iv_avator.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
