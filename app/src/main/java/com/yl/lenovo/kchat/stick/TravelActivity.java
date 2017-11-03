@@ -13,6 +13,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.yl.lenovo.kchat.R;
+import com.yl.lenovo.kchat.bean.SplashAndLogin;
 import com.yl.lenovo.kchat.stick.adapter.TravelingAdapter;
 import com.yl.lenovo.kchat.stick.model.ChannelEntity;
 import com.yl.lenovo.kchat.stick.model.FilterData;
@@ -127,7 +128,10 @@ public class TravelActivity extends AppCompatActivity implements SmoothListView.
         // ListView数据
         travelingList = ModelUtil.getTravelingData();
     }
+public void getChannelData(){
+    BmobQuery<ChannelEntity> query = new BmobQuery<ChannelEntity>();
 
+}
     private void initView() {
         // 设置广告数据
         headerBannerView = new HeaderBannerView(this);

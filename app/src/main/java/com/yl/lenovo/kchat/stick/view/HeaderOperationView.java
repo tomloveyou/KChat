@@ -1,10 +1,14 @@
 package com.yl.lenovo.kchat.stick.view;
 
 import android.app.Activity;
+import android.content.Context;
+import android.content.Intent;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
+import com.yl.lenovo.kchat.ItemDetailActivity;
+import com.yl.lenovo.kchat.ItemDetailFragment;
 import com.yl.lenovo.kchat.R;
 import com.yl.lenovo.kchat.stick.adapter.HeaderOperationAdapter;
 import com.yl.lenovo.kchat.stick.model.OperationEntity;
@@ -46,7 +50,12 @@ public class HeaderOperationView extends AbsHeaderView<List<OperationEntity>> {
         gvOperation.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                ToastUtil.show(mActivity, adapter.getItem(position).getTitle());
+//                ToastUtil.show(mActivity, adapter.getItem(position).getTitle());
+                Context context=view.getContext();
+                Intent intent = new Intent(context, ItemDetailActivity.class);
+                intent.putExtra(ItemDetailFragment.ARG_ITEM_ID, position);
+
+                context.startActivity(intent);
             }
         });
     }
