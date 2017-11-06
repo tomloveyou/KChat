@@ -24,12 +24,12 @@
         "source": "C:\\Users\\lenovo\\.android\\build-cache\\0a8596284a96e3b129f2f4d28a742363c3b3adf0\\output\\res\\drawable-hdpi-v4\\abc_ic_commit_search_api_mtrl_alpha.png"
     },
     {
-        "merged": "D:\\AndroidProject\\KChat\\KChat\\mFCFrame\\build\\intermediates\\res\\merged\\androidTest\\debug\\drawable-hdpi-v4\\icon_btn_menu.png",
-        "source": "D:\\AndroidProject\\KChat\\KChat\\mFCFrame\\build\\intermediates\\bundles\\debug\\res\\drawable-hdpi-v4\\icon_btn_menu.png"
-    },
-    {
         "merged": "D:\\AndroidProject\\KChat\\KChat\\mFCFrame\\build\\intermediates\\res\\merged\\androidTest\\debug\\drawable-hdpi-v4\\abc_ic_menu_selectall_mtrl_alpha.png",
         "source": "C:\\Users\\lenovo\\.android\\build-cache\\0a8596284a96e3b129f2f4d28a742363c3b3adf0\\output\\res\\drawable-hdpi-v4\\abc_ic_menu_selectall_mtrl_alpha.png"
+    },
+    {
+        "merged": "D:\\AndroidProject\\KChat\\KChat\\mFCFrame\\build\\intermediates\\res\\merged\\androidTest\\debug\\drawable-hdpi-v4\\icon_btn_menu.png",
+        "source": "D:\\AndroidProject\\KChat\\KChat\\mFCFrame\\build\\intermediates\\bundles\\debug\\res\\drawable-hdpi-v4\\icon_btn_menu.png"
     },
     {
         "merged": "D:\\AndroidProject\\KChat\\KChat\\mFCFrame\\build\\intermediates\\res\\merged\\androidTest\\debug\\drawable-hdpi-v4\\abc_ic_menu_paste_mtrl_am_alpha.png",

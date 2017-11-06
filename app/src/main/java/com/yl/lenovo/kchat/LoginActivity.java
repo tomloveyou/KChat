@@ -83,13 +83,14 @@ public class LoginActivity extends AppCompatActivity implements UserContract.Use
     private ImageView imageView;
     private UserContract.UserPresenter presenter = new UserPresenter(this);
     private SQLiteDatabase db;
+    private  Cursor cursor;
     @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         MyDatabaseStartImgHelper databaseStartImgHelper = new MyDatabaseStartImgHelper(this, "firstinit.db", null, 1);
         db = databaseStartImgHelper.getWritableDatabase("5123789");
-        final net.sqlcipher.Cursor cursor = db.query("StartImg", new String[]{"local_login_url","login_url"}, null, null, null, null, null);
+       cursor = db.query("StartImg", new String[]{"local_login_url","login_url"}, null, null, null, null, null);
 
         if (SPUtils.getString("userinfo") != null && !"".equals(SPUtils.getString("userinfo"))) {
             startActivity(new Intent(LoginActivity.this, MainActivity.class));
@@ -106,35 +107,28 @@ public class LoginActivity extends AppCompatActivity implements UserContract.Use
         tv_regist = (TextView) findViewById(R.id.tv_regist);
         imageView = (ImageView) findViewById(R.id.login_background_img);
         mPasswordView = (EditText) findViewById(R.id.password);
-        if (cursor!=null){
-            if (cursor.moveToNext()){
-                String filepath=cursor.getString(0);
-                if (filepath!=null&&"".equals(filepath)){
-                    Bitmap bitmap = BitmapFactory.decodeFile(filepath);
-                    if (bitmap!=null){
-                        imageView.setImageBitmap(bitmap);
-                    }else {
-                        //如果路径为下的图片转bitmap失败则查询登录背景图
-                    }
-
-                }else {
-                    //如果路径为空，或则不存在则查询登录背景图
+        if (cursor != null) {
+            if (cursor.moveToNext()) {
+                String path = cursor.getString(0);
+                Bitmap bitmap = null;
+                if (path != null) {
+                    bitmap = BitmapFactory.decodeFile(path);
+                } else {
+                    bitmap = BitmapFactory.decodeResource(getResources(), R.mipmap.splash);
                 }
-
-                //imageView.setImageBitmap(bitmap);
-            }else {
-                //数据中尾插
+                Drawable drawable = new BitmapDrawable(null, bitmap);
+                getWindow().setBackgroundDrawable(drawable);
+            } else {
+                Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.bg_btn_trans_round_n);
+                Drawable drawable = new BitmapDrawable(null, bitmap);
+                getWindow().setBackgroundDrawable(drawable);
             }
+        } else {
+            Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.bg_btn_trans_round_n);
+            Drawable drawable = new BitmapDrawable(null, bitmap);
+            getWindow().setBackgroundDrawable(drawable);
         }
-        if (cursor.moveToNext()){
-            Picasso.with(LoginActivity.this).load(cursor.getString(1)).into(imageView);
-            BmobFile bmobfile = new BmobFile(cursor.getString(1), "", cursor.getString(1));
-            downloadFile(bmobfile);
-
-
-        }else {
-            getImgData();
-        }
+        getImgData();
 
         mPasswordView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
@@ -174,27 +168,6 @@ public class LoginActivity extends AppCompatActivity implements UserContract.Use
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
     }
 
-    private void getImgData() {
-        BmobQuery<SplashAndLogin> query = new BmobQuery<SplashAndLogin>();
-        query.getObject("7037c41db7", new QueryListener<SplashAndLogin>() {
-
-            @Override
-            public void done(SplashAndLogin object, BmobException e) {
-                if (e == null) {
-
-                    ContentValues values = new ContentValues();
-                    values.put("login_url", object.getLogin_url().getFileUrl());
-                    db.insert("StartImg", null, values);
-                    Picasso.with(LoginActivity.this).load(object.getSplash_url().getFileUrl()).into(imageView);
-
-                } else {
-                    Log.i("bmob", "失败：" + e.getMessage() + "," + e.getErrorCode());
-                }
-            }
-
-        });
-    }
-
 
     private void downloadFile(BmobFile file) {
         //允许设置下载文件的存储路径，默认下载文件的目录为：context.getApplicationContext().getCacheDir()+"/bmob/"
@@ -211,19 +184,85 @@ public class LoginActivity extends AppCompatActivity implements UserContract.Use
                 if (e == null) {
                     ContentValues values = new ContentValues();
                     values.put("local_login_url", savePath);
-                    db.insert("StartImg", null, values);
+
+                    if (cursor.getString(0)!=null){
+                        db.insert("StartImg", null,values);
+                    }else {
+                        db.update("StartImg", values,null ,null);
+                    }
+
 
 
                     //toast("下载成功,保存路径:"+savePath);
                 } else {
                     //toast("下载失败："+e.getErrorCode()+","+e.getMessage());
                 }
+
             }
 
             @Override
             public void onProgress(Integer value, long newworkSpeed) {
                 Log.i("bmob", "下载进度：" + value + "," + newworkSpeed);
             }
+
+        });
+    }
+
+
+    public void getImgData() {
+        BmobQuery<SplashAndLogin> query = new BmobQuery<SplashAndLogin>();
+        query.getObject("7037c41db7", new QueryListener<SplashAndLogin>() {
+
+            @Override
+            public void done(SplashAndLogin object, BmobException e) {
+                if (e == null) {
+
+                    if (cursor.moveToNext()) {
+                        if (!object.getLogin_url().getFileUrl().equals(cursor.getString(1))) {
+                            ContentValues values = new ContentValues();
+                            values.put("login_url", object.getLogin_url().getFileUrl());
+                            db.update("StartImg", values,null,null);
+                            BmobFile bmobfile = new BmobFile("login_img.jpg", "", object.getLogin_url().getFileUrl());
+                            downloadFile(bmobfile);
+                        }
+                    } else {
+                        ContentValues values = new ContentValues();
+                        values.put("login_url", object.getLogin_url().getFileUrl());
+                        db.insert("StartImg", null, values);
+                        BmobFile bmobfile = new BmobFile("login_img.jpg", "", object.getLogin_url().getFileUrl());
+                        downloadFile(bmobfile);
+
+                    }
+                    Picasso.with(LoginActivity.this).load(object.getLogin_url().getFileUrl()).into(imageView);
+
+
+
+                } else {
+                    String img_path = null;
+
+                    try {
+                        img_path = cursor.getString(1);
+                    } catch (Exception e1) {
+                        img_path = null;
+                        Bitmap bitmap = BitmapFactory.decodeFile(cursor.getString(0));
+                        imageView.setImageBitmap(bitmap);
+                    }
+
+                    if (img_path == null) {
+                        Bitmap bitmap = BitmapFactory.decodeFile(cursor.getString(0));
+                        imageView.setImageBitmap(bitmap);
+
+                        // Picasso.with(SplashActivity.this).load(R.mipmap.smoothlistview_arrow).into(imageView);
+                    } else {
+                        Picasso.with(LoginActivity.this).load(img_path).into(imageView);
+                    }
+
+
+                }
+
+
+            }
+
 
         });
     }

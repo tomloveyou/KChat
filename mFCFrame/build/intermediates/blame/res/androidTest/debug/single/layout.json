@@ -16,12 +16,12 @@
         "source": "D:\\AndroidProject\\KChat\\KChat\\mFCFrame\\build\\intermediates\\bundles\\debug\\res\\layout\\dialog_jump_list.xml"
     },
     {
-        "merged": "D:\\AndroidProject\\KChat\\KChat\\mFCFrame\\build\\intermediates\\res\\merged\\androidTest\\debug\\layout\\abc_list_menu_item_icon.xml",
-        "source": "C:\\Users\\lenovo\\.android\\build-cache\\0a8596284a96e3b129f2f4d28a742363c3b3adf0\\output\\res\\layout\\abc_list_menu_item_icon.xml"
-    },
-    {
         "merged": "D:\\AndroidProject\\KChat\\KChat\\mFCFrame\\build\\intermediates\\res\\merged\\androidTest\\debug\\layout\\activity_cut_view.xml",
         "source": "D:\\AndroidProject\\KChat\\KChat\\mFCFrame\\build\\intermediates\\bundles\\debug\\res\\layout\\activity_cut_view.xml"
+    },
+    {
+        "merged": "D:\\AndroidProject\\KChat\\KChat\\mFCFrame\\build\\intermediates\\res\\merged\\androidTest\\debug\\layout\\abc_list_menu_item_icon.xml",
+        "source": "C:\\Users\\lenovo\\.android\\build-cache\\0a8596284a96e3b129f2f4d28a742363c3b3adf0\\output\\res\\layout\\abc_list_menu_item_icon.xml"
     },
     {
         "merged": "D:\\AndroidProject\\KChat\\KChat\\mFCFrame\\build\\intermediates\\res\\merged\\androidTest\\debug\\layout\\progress_dialog.xml",
@@ -36,28 +36,28 @@
         "source": "D:\\AndroidProject\\KChat\\KChat\\mFCFrame\\build\\intermediates\\bundles\\debug\\res\\layout\\dialog_date_selector.xml"
     },
     {
-        "merged": "D:\\AndroidProject\\KChat\\KChat\\mFCFrame\\build\\intermediates\\res\\merged\\androidTest\\debug\\layout\\abc_list_menu_item_checkbox.xml",
-        "source": "C:\\Users\\lenovo\\.android\\build-cache\\0a8596284a96e3b129f2f4d28a742363c3b3adf0\\output\\res\\layout\\abc_list_menu_item_checkbox.xml"
+        "merged": "D:\\AndroidProject\\KChat\\KChat\\mFCFrame\\build\\intermediates\\res\\merged\\androidTest\\debug\\layout\\progress_spinner_dialog.xml",
+        "source": "D:\\AndroidProject\\KChat\\KChat\\mFCFrame\\build\\intermediates\\bundles\\debug\\res\\layout\\progress_spinner_dialog.xml"
     },
     {
         "merged": "D:\\AndroidProject\\KChat\\KChat\\mFCFrame\\build\\intermediates\\res\\merged\\androidTest\\debug\\layout\\abc_popup_menu_item_layout.xml",
         "source": "C:\\Users\\lenovo\\.android\\build-cache\\0a8596284a96e3b129f2f4d28a742363c3b3adf0\\output\\res\\layout\\abc_popup_menu_item_layout.xml"
     },
     {
-        "merged": "D:\\AndroidProject\\KChat\\KChat\\mFCFrame\\build\\intermediates\\res\\merged\\androidTest\\debug\\layout\\progress_spinner_dialog.xml",
-        "source": "D:\\AndroidProject\\KChat\\KChat\\mFCFrame\\build\\intermediates\\bundles\\debug\\res\\layout\\progress_spinner_dialog.xml"
+        "merged": "D:\\AndroidProject\\KChat\\KChat\\mFCFrame\\build\\intermediates\\res\\merged\\androidTest\\debug\\layout\\abc_list_menu_item_checkbox.xml",
+        "source": "C:\\Users\\lenovo\\.android\\build-cache\\0a8596284a96e3b129f2f4d28a742363c3b3adf0\\output\\res\\layout\\abc_list_menu_item_checkbox.xml"
     },
     {
         "merged": "D:\\AndroidProject\\KChat\\KChat\\mFCFrame\\build\\intermediates\\res\\merged\\androidTest\\debug\\layout\\item_checkbox_list_dialog.xml",
         "source": "D:\\AndroidProject\\KChat\\KChat\\mFCFrame\\build\\intermediates\\bundles\\debug\\res\\layout\\item_checkbox_list_dialog.xml"
     },
     {
-        "merged": "D:\\AndroidProject\\KChat\\KChat\\mFCFrame\\build\\intermediates\\res\\merged\\androidTest\\debug\\layout\\abc_activity_chooser_view.xml",
-        "source": "C:\\Users\\lenovo\\.android\\build-cache\\0a8596284a96e3b129f2f4d28a742363c3b3adf0\\output\\res\\layout\\abc_activity_chooser_view.xml"
-    },
-    {
         "merged": "D:\\AndroidProject\\KChat\\KChat\\mFCFrame\\build\\intermediates\\res\\merged\\androidTest\\debug\\layout\\dialog_download_finish.xml",
         "source": "D:\\AndroidProject\\KChat\\KChat\\mFCFrame\\build\\intermediates\\bundles\\debug\\res\\layout\\dialog_download_finish.xml"
+    },
+    {
+        "merged": "D:\\AndroidProject\\KChat\\KChat\\mFCFrame\\build\\intermediates\\res\\merged\\androidTest\\debug\\layout\\abc_activity_chooser_view.xml",
+        "source": "C:\\Users\\lenovo\\.android\\build-cache\\0a8596284a96e3b129f2f4d28a742363c3b3adf0\\output\\res\\layout\\abc_activity_chooser_view.xml"
     },
     {
         "merged": "D:\\AndroidProject\\KChat\\KChat\\mFCFrame\\build\\intermediates\\res\\merged\\androidTest\\debug\\layout\\abc_search_dropdown_item_icons_2line.xml",

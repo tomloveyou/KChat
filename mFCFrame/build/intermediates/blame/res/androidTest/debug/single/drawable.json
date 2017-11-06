@@ -32,20 +32,20 @@
         "source": "C:\\Users\\lenovo\\.android\\build-cache\\0a8596284a96e3b129f2f4d28a742363c3b3adf0\\output\\res\\drawable\\abc_ic_search_api_material.xml"
     },
     {
-        "merged": "D:\\AndroidProject\\KChat\\KChat\\mFCFrame\\build\\intermediates\\res\\merged\\androidTest\\debug\\drawable\\abc_ratingbar_material.xml",
-        "source": "C:\\Users\\lenovo\\.android\\build-cache\\0a8596284a96e3b129f2f4d28a742363c3b3adf0\\output\\res\\drawable\\abc_ratingbar_material.xml"
-    },
-    {
         "merged": "D:\\AndroidProject\\KChat\\KChat\\mFCFrame\\build\\intermediates\\res\\merged\\androidTest\\debug\\drawable\\progress_dialog_style.xml",
         "source": "D:\\AndroidProject\\KChat\\KChat\\mFCFrame\\build\\intermediates\\bundles\\debug\\res\\drawable\\progress_dialog_style.xml"
     },
     {
-        "merged": "D:\\AndroidProject\\KChat\\KChat\\mFCFrame\\build\\intermediates\\res\\merged\\androidTest\\debug\\drawable\\progress_color_horizontal.xml",
-        "source": "D:\\AndroidProject\\KChat\\KChat\\mFCFrame\\build\\intermediates\\bundles\\debug\\res\\drawable\\progress_color_horizontal.xml"
+        "merged": "D:\\AndroidProject\\KChat\\KChat\\mFCFrame\\build\\intermediates\\res\\merged\\androidTest\\debug\\drawable\\abc_ratingbar_material.xml",
+        "source": "C:\\Users\\lenovo\\.android\\build-cache\\0a8596284a96e3b129f2f4d28a742363c3b3adf0\\output\\res\\drawable\\abc_ratingbar_material.xml"
     },
     {
         "merged": "D:\\AndroidProject\\KChat\\KChat\\mFCFrame\\build\\intermediates\\res\\merged\\androidTest\\debug\\drawable\\notification_bg_low.xml",
         "source": "C:\\Users\\lenovo\\.android\\build-cache\\0a8596284a96e3b129f2f4d28a742363c3b3adf0\\output\\res\\drawable\\notification_bg_low.xml"
+    },
+    {
+        "merged": "D:\\AndroidProject\\KChat\\KChat\\mFCFrame\\build\\intermediates\\res\\merged\\androidTest\\debug\\drawable\\progress_color_horizontal.xml",
+        "source": "D:\\AndroidProject\\KChat\\KChat\\mFCFrame\\build\\intermediates\\bundles\\debug\\res\\drawable\\progress_color_horizontal.xml"
     },
     {
         "merged": "D:\\AndroidProject\\KChat\\KChat\\mFCFrame\\build\\intermediates\\res\\merged\\androidTest\\debug\\drawable\\abc_btn_radio_material.xml",

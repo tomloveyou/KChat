@@ -8,12 +8,12 @@
         "source": "C:\\Users\\lenovo\\.android\\build-cache\\0a8596284a96e3b129f2f4d28a742363c3b3adf0\\output\\res\\drawable-xhdpi-v4\\abc_scrubber_control_to_pressed_mtrl_000.png"
     },
     {
-        "merged": "D:\\AndroidProject\\KChat\\KChat\\mFCFrame\\build\\intermediates\\res\\merged\\debug\\drawable-xhdpi-v4\\pin_red.png",
-        "source": "D:\\AndroidProject\\KChat\\KChat\\mFCFrame\\src\\main\\res\\drawable-xhdpi\\pin_red.png"
-    },
-    {
         "merged": "D:\\AndroidProject\\KChat\\KChat\\mFCFrame\\build\\intermediates\\res\\merged\\debug\\drawable-xhdpi-v4\\pin_purple.png",
         "source": "D:\\AndroidProject\\KChat\\KChat\\mFCFrame\\src\\main\\res\\drawable-xhdpi\\pin_purple.png"
+    },
+    {
+        "merged": "D:\\AndroidProject\\KChat\\KChat\\mFCFrame\\build\\intermediates\\res\\merged\\debug\\drawable-xhdpi-v4\\pin_red.png",
+        "source": "D:\\AndroidProject\\KChat\\KChat\\mFCFrame\\src\\main\\res\\drawable-xhdpi\\pin_red.png"
     },
     {
         "merged": "D:\\AndroidProject\\KChat\\KChat\\mFCFrame\\build\\intermediates\\res\\merged\\debug\\drawable-xhdpi-v4\\abc_ic_star_half_black_36dp.png",

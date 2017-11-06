@@ -20,12 +20,12 @@
         "source": "C:\\Users\\lenovo\\.android\\build-cache\\0a8596284a96e3b129f2f4d28a742363c3b3adf0\\output\\res\\layout\\abc_alert_dialog_material.xml"
     },
     {
-        "merged": "D:\\AndroidProject\\KChat\\KChat\\mFCFrame\\build\\intermediates\\res\\merged\\release\\layout\\notification_template_media.xml",
-        "source": "C:\\Users\\lenovo\\.android\\build-cache\\0a8596284a96e3b129f2f4d28a742363c3b3adf0\\output\\res\\layout\\notification_template_media.xml"
-    },
-    {
         "merged": "D:\\AndroidProject\\KChat\\KChat\\mFCFrame\\build\\intermediates\\res\\merged\\release\\layout\\notification_template_icon_group.xml",
         "source": "C:\\Users\\lenovo\\.android\\build-cache\\0a8596284a96e3b129f2f4d28a742363c3b3adf0\\output\\res\\layout\\notification_template_icon_group.xml"
+    },
+    {
+        "merged": "D:\\AndroidProject\\KChat\\KChat\\mFCFrame\\build\\intermediates\\res\\merged\\release\\layout\\notification_template_media.xml",
+        "source": "C:\\Users\\lenovo\\.android\\build-cache\\0a8596284a96e3b129f2f4d28a742363c3b3adf0\\output\\res\\layout\\notification_template_media.xml"
     },
     {
         "merged": "D:\\AndroidProject\\KChat\\KChat\\mFCFrame\\build\\intermediates\\res\\merged\\release\\layout\\abc_screen_simple.xml",
@@ -52,32 +52,32 @@
         "source": "C:\\Users\\lenovo\\.android\\build-cache\\0a8596284a96e3b129f2f4d28a742363c3b3adf0\\output\\res\\layout\\support_simple_spinner_dropdown_item.xml"
     },
     {
-        "merged": "D:\\AndroidProject\\KChat\\KChat\\mFCFrame\\build\\intermediates\\res\\merged\\release\\layout\\notification_action.xml",
-        "source": "C:\\Users\\lenovo\\.android\\build-cache\\0a8596284a96e3b129f2f4d28a742363c3b3adf0\\output\\res\\layout\\notification_action.xml"
-    },
-    {
         "merged": "D:\\AndroidProject\\KChat\\KChat\\mFCFrame\\build\\intermediates\\res\\merged\\release\\layout\\select_dialog_singlechoice_material.xml",
         "source": "C:\\Users\\lenovo\\.android\\build-cache\\0a8596284a96e3b129f2f4d28a742363c3b3adf0\\output\\res\\layout\\select_dialog_singlechoice_material.xml"
     },
     {
-        "merged": "D:\\AndroidProject\\KChat\\KChat\\mFCFrame\\build\\intermediates\\res\\merged\\release\\layout\\notification_template_media_custom.xml",
-        "source": "C:\\Users\\lenovo\\.android\\build-cache\\0a8596284a96e3b129f2f4d28a742363c3b3adf0\\output\\res\\layout\\notification_template_media_custom.xml"
+        "merged": "D:\\AndroidProject\\KChat\\KChat\\mFCFrame\\build\\intermediates\\res\\merged\\release\\layout\\notification_action.xml",
+        "source": "C:\\Users\\lenovo\\.android\\build-cache\\0a8596284a96e3b129f2f4d28a742363c3b3adf0\\output\\res\\layout\\notification_action.xml"
     },
     {
         "merged": "D:\\AndroidProject\\KChat\\KChat\\mFCFrame\\build\\intermediates\\res\\merged\\release\\layout\\abc_action_bar_view_list_nav_layout.xml",
         "source": "C:\\Users\\lenovo\\.android\\build-cache\\0a8596284a96e3b129f2f4d28a742363c3b3adf0\\output\\res\\layout\\abc_action_bar_view_list_nav_layout.xml"
     },
     {
-        "merged": "D:\\AndroidProject\\KChat\\KChat\\mFCFrame\\build\\intermediates\\res\\merged\\release\\layout\\abc_list_menu_item_checkbox.xml",
-        "source": "C:\\Users\\lenovo\\.android\\build-cache\\0a8596284a96e3b129f2f4d28a742363c3b3adf0\\output\\res\\layout\\abc_list_menu_item_checkbox.xml"
+        "merged": "D:\\AndroidProject\\KChat\\KChat\\mFCFrame\\build\\intermediates\\res\\merged\\release\\layout\\notification_template_media_custom.xml",
+        "source": "C:\\Users\\lenovo\\.android\\build-cache\\0a8596284a96e3b129f2f4d28a742363c3b3adf0\\output\\res\\layout\\notification_template_media_custom.xml"
+    },
+    {
+        "merged": "D:\\AndroidProject\\KChat\\KChat\\mFCFrame\\build\\intermediates\\res\\merged\\release\\layout\\abc_list_menu_item_layout.xml",
+        "source": "C:\\Users\\lenovo\\.android\\build-cache\\0a8596284a96e3b129f2f4d28a742363c3b3adf0\\output\\res\\layout\\abc_list_menu_item_layout.xml"
     },
     {
         "merged": "D:\\AndroidProject\\KChat\\KChat\\mFCFrame\\build\\intermediates\\res\\merged\\release\\layout\\popup_menu_layout.xml",
         "source": "D:\\AndroidProject\\KChat\\KChat\\mFCFrame\\src\\main\\res\\layout\\popup_menu_layout.xml"
     },
     {
-        "merged": "D:\\AndroidProject\\KChat\\KChat\\mFCFrame\\build\\intermediates\\res\\merged\\release\\layout\\abc_list_menu_item_layout.xml",
-        "source": "C:\\Users\\lenovo\\.android\\build-cache\\0a8596284a96e3b129f2f4d28a742363c3b3adf0\\output\\res\\layout\\abc_list_menu_item_layout.xml"
+        "merged": "D:\\AndroidProject\\KChat\\KChat\\mFCFrame\\build\\intermediates\\res\\merged\\release\\layout\\abc_list_menu_item_checkbox.xml",
+        "source": "C:\\Users\\lenovo\\.android\\build-cache\\0a8596284a96e3b129f2f4d28a742363c3b3adf0\\output\\res\\layout\\abc_list_menu_item_checkbox.xml"
     },
     {
         "merged": "D:\\AndroidProject\\KChat\\KChat\\mFCFrame\\build\\intermediates\\res\\merged\\release\\layout\\abc_action_menu_layout.xml",
