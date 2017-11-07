@@ -49,6 +49,7 @@ import java.util.Locale;
 
 import butterknife.ButterKnife;
 
+
 /***
  * 本项目所有activity的直接父类
  * <dl>
@@ -80,7 +81,7 @@ public class BaseActivity extends FragmentActivity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		ButterKnife.bind(this);
+		ButterKnife.inject(this);
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		MainApplication.allActivitys.put(getClass().getName(),this);
 
@@ -340,7 +341,7 @@ public class BaseActivity extends FragmentActivity {
 	@Override
 	protected void onDestroy() {
 		super.onDestroy();
-		ButterKnife.unbind(this);
+		ButterKnife.reset(this);
 		MainApplication.allActivitys.remove(this);
 
 
