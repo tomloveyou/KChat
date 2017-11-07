@@ -44,8 +44,9 @@ import android.widget.Toast;
 import com.google.gson.Gson;
 
 import com.lzy.imagepicker.bean.ImageItem;
+import com.lzy.imagepicker.util.DateUtil;
 import com.lzy.widget.ExpandGridView;
-import com.mfc.appframe.utils.DateUtil;
+
 import com.squareup.picasso.Picasso;
 import com.yl.lenovo.kchat.bean.Dynamic;
 import com.yl.lenovo.kchat.bean.MyUser;

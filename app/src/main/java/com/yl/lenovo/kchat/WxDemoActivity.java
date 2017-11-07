@@ -32,7 +32,7 @@ import cn.bmob.v3.exception.BmobException;
 import cn.bmob.v3.listener.SaveListener;
 import cn.bmob.v3.listener.UploadBatchListener;
 
-import static cn.qqtheme.framework.util.LogUtils.error;
+
 
 /**
  * ================================================
@@ -83,19 +83,19 @@ public class WxDemoActivity extends BGAPPToolbarActivity implements ImagePickerA
                             @Override
                             public void done(String s, BmobException e) {
                                 DialogUtils.dismiss();
-                                error("成功发布");
+
                                 finish();
                             }
                         });
                         if(urls.size()!=filePaths.size()){//如果数量相等，则代表文件全部上传完成
                             //do something
-                            error("部分文件上传失败");
+
                         }
                     }
 
                     @Override
                     public void onError(int statuscode, String errormsg) {
-                        error("错误码"+statuscode +",错误描述："+errormsg);
+
                     }
 
                     @Override

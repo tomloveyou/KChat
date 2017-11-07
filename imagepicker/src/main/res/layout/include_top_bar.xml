@@ -20,7 +20,7 @@
         android:layout_height="match_parent"
         android:layout_marginBottom="12dp"
         android:layout_marginTop="12dp"
-        android:layout_toRightOf="@id/btn_back"
+        android:layout_toRightOf="@+id/btn_back"
         android:background="#2E2E32" />
 
     <TextView
@@ -29,7 +29,7 @@
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
         android:layout_marginLeft="12dp"
-        android:layout_toRightOf="@id/btn_back"
+        android:layout_toRightOf="@+id/btn_back"
         android:text="图片"
         android:textAppearance="@style/TextAppearance.AppCompat.Title"
         android:textColor="#ffffff"
@@ -44,7 +44,7 @@
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
         android:layout_marginRight="60dp"
-        android:layout_toLeftOf="@id/btn_ok"
+        android:layout_toLeftOf="@+id/btn_ok"
         android:text="旋转"
         android:visibility="gone"
         android:textAppearance="@style/TextAppearance.AppCompat.Title"
