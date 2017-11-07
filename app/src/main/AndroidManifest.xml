@@ -110,9 +110,7 @@
         <activity
             android:name=".ReleaseActivity"
             android:exported="true" />
-        <activity
-            android:name=".widget.multi_image_selector.MultiImageSelectorActivity"
-            android:theme="@style/AppTheme.NoActionBar" />
+
         <activity android:name=".MessageActivity" />
         <activity android:name=".stick.TravelActivity" />
         <activity
