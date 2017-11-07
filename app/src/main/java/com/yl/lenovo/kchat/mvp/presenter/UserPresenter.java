@@ -84,7 +84,9 @@ public class UserPresenter extends BasePresenterImpl implements UserContract.Use
                     userLoginView.loginsuccess();
                     //通过BmobUser user = BmobUser.getCurrentUser()获取登录成功后的本地用户信息
                     //如果是自定义用户对象MyUser，可通过MyUser user = BmobUser.getCurrentUser(MyUser.class)获取自定义用户信息
-                }else{
+                }else if (e.getErrorCode()==101){
+                    userLoginView.error("用户名或则密码错误");
+                }else {
                     userLoginView.error(e.getMessage());
                 }
             }

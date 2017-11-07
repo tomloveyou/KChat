@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     tools:context="com.yl.lenovo.kchat.MessageActivity">
 
-    <com.yl.lenovo.kchat.xlistview.XListView
+    <com.yl.lenovo.kchat.stick.view.SmoothListView.SmoothListView
         android:id="@+id/pub_listview"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
@@ -15,5 +15,5 @@
         android:cacheColorHint="@android:color/transparent"
         android:descendantFocusability="blocksDescendants"
         >
-    </com.yl.lenovo.kchat.xlistview.XListView>
+    </com.yl.lenovo.kchat.stick.view.SmoothListView.SmoothListView>
 </android.support.constraint.ConstraintLayout>

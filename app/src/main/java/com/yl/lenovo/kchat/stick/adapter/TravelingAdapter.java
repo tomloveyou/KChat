@@ -1,6 +1,7 @@
 package com.yl.lenovo.kchat.stick.adapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,6 +11,8 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 
+import com.yl.lenovo.kchat.ItemDetailActivity;
+import com.yl.lenovo.kchat.ItemDetailFragment;
 import com.yl.lenovo.kchat.R;
 import com.yl.lenovo.kchat.stick.model.TravelingEntity;
 import com.yl.lenovo.kchat.stick.util.ToastUtil;
@@ -105,7 +108,12 @@ public class TravelingAdapter extends BaseListAdapter<TravelingEntity> {
         convertView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ToastUtil.show(mContext, title);
+                Context context= v.getContext();
+                Intent intent = new Intent(context, ItemDetailActivity.class);
+                intent.putExtra(ItemDetailFragment.ARG_ITEM_ID, 0);
+
+                context.startActivity(intent);
+                //ToastUtil.show(mContext, title);
             }
         });
 

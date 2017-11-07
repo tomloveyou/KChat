@@ -2,10 +2,12 @@ package com.yl.lenovo.kchat;
 
 import android.Manifest;
 import android.app.Dialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
@@ -31,6 +33,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
+import android.widget.AbsListView;
+import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.PopupWindow;
@@ -38,6 +42,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
+
+import com.lzy.imagepicker.bean.ImageItem;
+import com.lzy.imagepicker.util.DateUtil;
+import com.lzy.widget.ExpandGridView;
 
 import com.squareup.picasso.Picasso;
 import com.yl.lenovo.kchat.bean.Dynamic;
@@ -48,10 +56,13 @@ import com.yl.lenovo.kchat.mvp.contract.UserContract;
 import com.yl.lenovo.kchat.mvp.presenter.FilePresenterImpl;
 import com.yl.lenovo.kchat.mvp.presenter.UserPresenter;
 import com.yl.lenovo.kchat.stick.TravelActivity;
+import com.yl.lenovo.kchat.stick.view.SmoothListView.SmoothListView;
 import com.yl.lenovo.kchat.utis.AppCacheDirUtil;
 import com.yl.lenovo.kchat.utis.SPUtils;
 import com.yl.lenovo.kchat.widget.CustomOperationPopWindow;
-import com.yl.lenovo.kchat.xlistview.XListView;
+
+import com.zhy.adapter.abslistview.CommonAdapter;
+import com.zhy.adapter.abslistview.ViewHolder;
 
 
 import java.io.BufferedOutputStream;
@@ -78,14 +89,15 @@ import pub.devrel.easypermissions.AfterPermissionGranted;
 import pub.devrel.easypermissions.EasyPermissions;
 
 public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener, FileContract.FileSingleUploadView, BGANinePhotoLayout.Delegate, UserContract.UserDataUpdateView, EasyPermissions.PermissionCallbacks {
+        implements NavigationView.OnNavigationItemSelectedListener, SmoothListView.ISmoothListViewListener, BGANinePhotoLayout.Delegate,EasyPermissions.PermissionCallbacks {
     private TextView tv_username, tv_email;
     private ImageView iv_avator;
-    private RecyclerView mMomentRv;
-    private MomentAdapter mMomentAdapter;
+    private SmoothListView mMomentRv;
+
     NavigationView navigationView;
 
     private List<Dynamic> data = new ArrayList<>();
+    private CommonAdapter<Dynamic> adapter;
 
     FloatingActionButton fab;
     private List<String> item_data = new ArrayList<>();
@@ -93,18 +105,17 @@ public class MainActivity extends AppCompatActivity
     private static final int REQUEST_CODE_ADD_MOMENT = 1;
 
 
-
     private BGANinePhotoLayout mCurrentClickNpl;
-    private FileContract.FileUploadPresenter presenter = new FilePresenterImpl(this);
-    private UserContract.UserPresenter userPresenter = new UserPresenter(this);
+
     private int limit = 10; // 每页的数据是10条
     private int curPage = 0; // 当前页的编号，从0开始
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         fab = (FloatingActionButton) findViewById(R.id.fab);
-        mMomentRv = (RecyclerView) findViewById(R.id.rv_moment_list_moments);
+        mMomentRv = (SmoothListView) findViewById(R.id.rv_moment_list_moments);
         navigationView = (NavigationView) findViewById(R.id.nav_view);
         tv_username = (TextView) navigationView.getHeaderView(0).findViewById(R.id.tv_username);
         tv_email = (TextView) navigationView.getHeaderView(0).findViewById(R.id.tv_email);
@@ -120,21 +131,45 @@ public class MainActivity extends AppCompatActivity
         item_data.add("点钟");
         item_data.add("点钟");
         item_data.add("点钟");
+
         iv_avator.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                selectImageAndCrop();
+                // selectImageAndCrop();
             }
         });
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity(new Intent(MainActivity.this, ItemListActivity.class));
-    }
-});
-        mMomentAdapter = new MomentAdapter(mMomentRv);
+                startActivity(new Intent(MainActivity.this, WxDemoActivity.class));
+            }
+        });
+        mMomentRv.setSmoothListViewListener(this);
+        mMomentRv.setLoadMoreEnable(true);
 
-        mMomentRv.addOnScrollListener(new BGARVOnScrollListener(this));
+        adapter = new CommonAdapter<Dynamic>(MainActivity.this, R.layout.item_dynamic_layout, data) {
+            @Override
+            protected void convert(ViewHolder viewHolder, Dynamic item, int position) {
+                if (TextUtils.isEmpty(item.getContent())) {
+
+                    viewHolder.setVisible(R.id.item_dynamic_content, false);
+                } else {
+                    viewHolder.setVisible(R.id.item_dynamic_content, true);
+                    viewHolder.setText(R.id.item_dynamic_title, item.getTitle());
+                    viewHolder.setText(R.id.item_dynamic_content, item.getContent());
+                    viewHolder.setText(R.id.item_dynamic_time, item.getCreatedAt());
+                    ImageView imageView = viewHolder.getView(R.id.iv_item_moment_avatar);
+                    Picasso.with(MainActivity.this).load(item.getUser_avator()).into(imageView);
+                }
+
+
+                BGANinePhotoLayout ninePhotoLayout = viewHolder.getView(R.id.npl_item_moment_photos);
+                ninePhotoLayout.setDelegate(MainActivity.this);
+                ninePhotoLayout.setData((ArrayList<String>) item.getImg_list());
+            }
+        };
+        mMomentRv.setAdapter(adapter);
+
         navigationView.setNavigationItemSelectedListener(this);
 
         if (KChatApp.getInstance().getBmobUser() != null) {
@@ -143,10 +178,9 @@ public class MainActivity extends AppCompatActivity
             Picasso.with(MainActivity.this).load(KChatApp.getInstance().getBmobUser().getUser_avator() == null ? "http://ossweb-img.qq.com/upload/apps/ishow/176/thumb_1316413425_-1719592020_13323_sProdImgNo_1.jpg" : KChatApp.getInstance().getBmobUser().getUser_avator()).into(iv_avator);
 
         }
-        processLogic(savedInstanceState);
+        onRefresh();
 
     }
-
 
     @Override
     public void onClickNinePhotoItem(BGANinePhotoLayout ninePhotoLayout, View view, int position, String model, List<String> models) {
@@ -155,109 +189,108 @@ public class MainActivity extends AppCompatActivity
     }
 
 
-    private class MomentAdapter extends BGARecyclerViewAdapter<Dynamic> {
+    private class MyAdapter extends BaseAdapter {
 
-        public MomentAdapter(RecyclerView recyclerView) {
-            super(recyclerView, R.layout.item_dynamic_layout);
+        private List<String> items;
+
+        public MyAdapter(List<String> items) {
+            this.items = items;
+        }
+
+        public void setData(List<String> items) {
+            this.items = items;
+            notifyDataSetChanged();
         }
 
         @Override
-        protected void fillData(BGAViewHolderHelper helper, int position, Dynamic moment) {
-            if (TextUtils.isEmpty(moment.getContent())) {
-                helper.setVisibility(R.id.item_dynamic_content, View.GONE);
-            } else {
-                helper.setVisibility(R.id.item_dynamic_content, View.VISIBLE);
-                helper.setText(R.id.item_dynamic_title, moment.getTitle());
-                helper.setText(R.id.item_dynamic_content, moment.getContent());
-                helper.setText(R.id.item_dynamic_time, moment.getCreatedAt());
-                Picasso.with(MainActivity.this).load(moment.getUser_avator()).into(helper.getImageView(R.id.iv_item_moment_avatar));
+        public int getCount() {
+            return items.size();
+        }
+
+        @Override
+        public String getItem(int position) {
+            return items.get(position);
+        }
+
+        @Override
+        public long getItemId(int position) {
+            return position;
+        }
+
+        @Override
+        public View getView(int position, View convertView, ViewGroup parent) {
+            ImgBox box=null;
+            if (convertView==null){
+                convertView=new ImageView(parent.getContext());
+                box=new ImgBox(parent.getContext());
+                convertView.setTag(box);
+            }else {
+                box= (ImgBox) convertView.getTag();
             }
 
-            BGANinePhotoLayout ninePhotoLayout = helper.getView(R.id.npl_item_moment_photos);
-            ninePhotoLayout.setDelegate(MainActivity.this);
-            ninePhotoLayout.setData((ArrayList<String>) moment.getImg_list());
+            Picasso.with(convertView.getContext()).load(getItem(position)).into(box.imageView);
+
+            return convertView;
+        }
+        class ImgBox{
+            ImageView imageView;
+
+            public ImgBox(Context context) {
+                this.imageView = new ImageView(context);
+            }
         }
     }
-
-    protected void processLogic(Bundle savedInstanceState) {
-        setTitle("朋友圈列表");
-
-        LinearLayoutManager manager = new LinearLayoutManager(this);
-        manager.setOrientation(LinearLayoutManager.VERTICAL);
-        mMomentRv.setLayoutManager(manager);
-        mMomentRv.setAdapter(mMomentAdapter);
+    @Override
+    public void onRefresh() {
+        curPage = 1;
+        data.clear();
+        adapter.notifyDataSetChanged();
         BmobQuery<Dynamic> query = new BmobQuery<Dynamic>();
-        query.order("updatedAt");
-
         query.setLimit(limit);
+        query.addWhereEqualTo("ower",KChatApp.getInstance().getBmobUser().getObjectId());
         query.setSkip(curPage);
         query.findObjects(new FindListener<Dynamic>() {
             @Override
             public void done(List<Dynamic> object, BmobException e) {
                 if (e == null) {
                     data.addAll(object);
-                    mMomentAdapter.setData(data);
+                    adapter.notifyDataSetChanged();
                 }
-
+                mMomentRv.setRefreshTime(DateUtil.getRefreshTime(MainActivity.this));
+                mMomentRv.stopRefresh();
             }
         });
 
     }
-    private void  setmenuicon(){
-
-    }
-
-    public void selectImageAndCrop() {
-        // 来自相册
-        Intent albumIntent = new Intent(Intent.ACTION_PICK, null);
-        /**
-         * 下面这句话，与其它方式写是一样的效果，如果：
-         * intent.setData(MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-         * intent.setType(""image/*");设置数据类型
-         * 要限制上传到服务器的图片类型时可以直接写如："image/jpeg 、 image/png等的类型"
-         */
-        albumIntent.setDataAndType(
-                MediaStore.Images.Media.EXTERNAL_CONTENT_URI, "image/*");
-        startActivityForResult(albumIntent, 123);
-    }
-
-    /**
-     * 将图片Bitmap对象保存为File文件
-     *
-     * @param bitmap 传入的图片Bitmap对象
-     */
-    public File saveBitmapFile(Bitmap bitmap) {
-
-        File file = AppCacheDirUtil.creatImageFile(this, "img",
-                System.currentTimeMillis() + ".jpeg");// 将要保存图片的路径
-        try {
-            BufferedOutputStream bos = new BufferedOutputStream(
-                    new FileOutputStream(file));
-            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, bos);
-            bos.flush();
-            bos.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return file;
-    }
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode == RESULT_OK) {
-            if (data != null) {
-                try {
-                    Bitmap img_front = BitmapFactory.decodeStream(getContentResolver().openInputStream(data.getData()));
-                    presenter.singleupload(saveBitmapFile(img_front).getAbsolutePath());
-                } catch (FileNotFoundException e) {
-                    e.printStackTrace();
+    public void onLoadMore() {
+
+        BmobQuery<Dynamic> query = new BmobQuery<Dynamic>();
+        query.order("updatedAt");
+        query.setLimit(limit);
+        query.addWhereEqualTo("ower",KChatApp.getInstance().getBmobUser().getObjectId());//查询当前登录用户的动态
+        query.setSkip(curPage);
+        query.findObjects(new FindListener<Dynamic>() {
+            @Override
+            public void done(List<Dynamic> object, BmobException e) {
+                if (e == null) {
+                    curPage += 10;
+                    data.addAll(object);
+                    adapter.notifyDataSetChanged();
+                    if (object.size()==0){
+                        //mMomentRv.setLoadEnd();
+                    }else {
+                        mMomentRv.stopLoadMore();
+                    }
+                }else {
+                    mMomentRv.stopLoadMore();
                 }
 
-
             }
-        }
+        });
     }
+
 
     @Override
     public void onBackPressed() {
@@ -285,7 +318,7 @@ public class MainActivity extends AppCompatActivity
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
-            startActivity(new Intent(MainActivity.this,MessageActivity.class));
+            startActivity(new Intent(MainActivity.this, MessageActivity.class));
             return true;
         }
 
@@ -305,7 +338,7 @@ public class MainActivity extends AppCompatActivity
         } else if (id == R.id.nav_slideshow) {
             startActivity(new Intent(MainActivity.this, TravelActivity.class));
         } else if (id == R.id.nav_manage) {
-
+           // startActivity(new Intent(MainActivity.this, SettingsActivity.class));
         } else if (id == R.id.nav_share) {
 
         } else if (id == R.id.nav_send) {
@@ -318,25 +351,6 @@ public class MainActivity extends AppCompatActivity
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
-
-    @Override
-    public void uploadsuccess(String url) {
-        KChatApp.getInstance().getBmobUser().setUser_avator(url);
-        userPresenter.update(KChatApp.getInstance().bmobUser);
-    }
-
-    @Override
-    public void updatesuccess() {
-        SPUtils.save("userinfo", new Gson().toJson(KChatApp.getInstance().getBmobUser()));
-        Picasso.with(MainActivity.this).load(KChatApp.getInstance().getBmobUser().getUser_avator() == null ? "http://ossweb-img.qq.com/upload/apps/ishow/176/thumb_1316413425_-1719592020_13323_sProdImgNo_1.jpg" : KChatApp.getInstance().getBmobUser().getUser_avator()).into(iv_avator);
-        Toast.makeText(MainActivity.this, "成功", Toast.LENGTH_LONG).show();
-    }
-
-    @Override
-    public void error(String msg) {
-
-    }
-
 
     /**
      * 图片预览，兼容6.0动态权限
@@ -381,4 +395,5 @@ public class MainActivity extends AppCompatActivity
     public void onPermissionsDenied(int requestCode, List<String> perms) {
 
     }
+
 }
