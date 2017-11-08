@@ -120,18 +120,40 @@ public class TravelActivity extends AppCompatActivity implements SmoothListView.
         // 广告数据
         bannerList = ModelUtil.getBannerData();
         // 频道数据
-        BmobQuery<ChannelEntity> query=new BmobQuery<>();
+        //BmobQuery<ChannelEntity> query=new BmobQuery<>();
 
-        channelList = ModelUtil.getChannelData();
+        //channelList = ModelUtil.getChannelData();
+        getChannelData();
         // 运营数据
         operationList = ModelUtil.getOperationData();
         // ListView数据
-        travelingList = ModelUtil.getTravelingData();
+         travelingList = ModelUtil.getTravelingData();
+        getTravelingData();
     }
-public void getChannelData(){
-    BmobQuery<ChannelEntity> query = new BmobQuery<ChannelEntity>();
 
-}
+    public void getChannelData() {
+        BmobQuery<ChannelEntity> query = new BmobQuery<ChannelEntity>();
+        query.findObjects(new FindListener<ChannelEntity>() {
+            @Override
+            public void done(List<ChannelEntity> list, BmobException e) {
+                channelList = list;
+
+            }
+        });
+
+    }
+
+    private void getTravelingData() {
+        BmobQuery<TravelingEntity> query = new BmobQuery<TravelingEntity>();
+        query.findObjects(new FindListener<TravelingEntity>() {
+            @Override
+            public void done(List<TravelingEntity> list, BmobException e) {
+                travelingList.addAll(list);
+                mAdapter.notifyDataSetChanged();
+            }
+        });
+    }
+
     private void initView() {
         // 设置广告数据
         headerBannerView = new HeaderBannerView(this);

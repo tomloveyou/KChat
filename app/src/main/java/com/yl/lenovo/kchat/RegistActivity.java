@@ -39,7 +39,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.squareup.picasso.Picasso;
+import com.bumptech.glide.Glide;
 import com.yl.lenovo.kchat.bean.SplashAndLogin;
 import com.yl.lenovo.kchat.mvp.contract.UserContract;
 import com.yl.lenovo.kchat.mvp.presenter.UserPresenter;
@@ -206,7 +206,7 @@ public class RegistActivity extends AppCompatActivity implements UserContract.Us
                         downloadFile(bmobfile);
 
                     }
-                    Picasso.with(RegistActivity.this).load(object.getLogin_url().getFileUrl()).into(imageView);
+                    Glide.with(RegistActivity.this).load(object.getLogin_url().getFileUrl()).into(imageView);
 
 
 
@@ -227,7 +227,7 @@ public class RegistActivity extends AppCompatActivity implements UserContract.Us
 
                         // Picasso.with(SplashActivity.this).load(R.mipmap.smoothlistview_arrow).into(imageView);
                     } else {
-                        Picasso.with(RegistActivity.this).load(img_path).into(imageView);
+                        Glide.with(RegistActivity.this).load(img_path).into(imageView);
                     }
 
 

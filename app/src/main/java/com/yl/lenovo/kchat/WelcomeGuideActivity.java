@@ -16,7 +16,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 
-import com.squareup.picasso.Picasso;
+import com.bumptech.glide.Glide;
 import com.yl.lenovo.kchat.bean.leadimg;
 import com.yl.lenovo.kchat.utis.SPUtils;
 
@@ -82,7 +82,7 @@ private void  getleadimg(){
                 for (int i = 0; i < leader_data_urls.size(); i++) {
                     View view = LayoutInflater.from(WelcomeGuideActivity.this).inflate(R.layout.guid_view1, null);
                     ImageView guid_view = (ImageView) view.findViewById(R.id.guid_view_img);
-                    Picasso.with(WelcomeGuideActivity.this).load(leader_data_urls.get(i)).into(guid_view);
+                    Glide.with(WelcomeGuideActivity.this).load(leader_data_urls.get(i)).into(guid_view);
                     if (i == leader_data_urls.size() - 1) {
 
                         startBtn.setTag("enter");

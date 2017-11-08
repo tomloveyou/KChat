@@ -14,8 +14,7 @@
         android:fadingEdge="none"
         android:overScrollMode="never"
         android:scrollbars="none"
-        tools:listheader="@layout/header_banner_layout"
-        tools:listitem="@layout/item_travel" />
+    />
 
     <LinearLayout
         android:layout_width="match_parent"
