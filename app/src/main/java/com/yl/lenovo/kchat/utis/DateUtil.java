@@ -1,4 +1,4 @@
-package com.lzy.imagepicker.util;
+package com.yl.lenovo.kchat.utis;
 
 import android.annotation.SuppressLint;
 import android.content.Context;

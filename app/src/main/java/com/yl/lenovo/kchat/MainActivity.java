@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
@@ -41,13 +42,14 @@ import android.widget.PopupWindow;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.facebook.drawee.view.SimpleDraweeView;
 import com.google.gson.Gson;
 
 import com.lzy.imagepicker.bean.ImageItem;
-import com.lzy.imagepicker.util.DateUtil;
+
 import com.lzy.widget.ExpandGridView;
 
-import com.squareup.picasso.Picasso;
+
 import com.yl.lenovo.kchat.bean.Dynamic;
 import com.yl.lenovo.kchat.bean.MyUser;
 import com.yl.lenovo.kchat.bean.leadimg;
@@ -58,6 +60,7 @@ import com.yl.lenovo.kchat.mvp.presenter.UserPresenter;
 import com.yl.lenovo.kchat.stick.TravelActivity;
 import com.yl.lenovo.kchat.stick.view.SmoothListView.SmoothListView;
 import com.yl.lenovo.kchat.utis.AppCacheDirUtil;
+import com.yl.lenovo.kchat.utis.DateUtil;
 import com.yl.lenovo.kchat.utis.SPUtils;
 import com.yl.lenovo.kchat.widget.CustomOperationPopWindow;
 
@@ -74,8 +77,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-import cn.bingoogolapple.androidcommon.adapter.BGARecyclerViewAdapter;
-import cn.bingoogolapple.androidcommon.adapter.BGAViewHolderHelper;
+
 import cn.bingoogolapple.photopicker.activity.BGAPPToolbarActivity;
 import cn.bingoogolapple.photopicker.activity.BGAPhotoPreviewActivity;
 import cn.bingoogolapple.photopicker.imageloader.BGARVOnScrollListener;
@@ -91,7 +93,7 @@ import pub.devrel.easypermissions.EasyPermissions;
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, SmoothListView.ISmoothListViewListener, BGANinePhotoLayout.Delegate,EasyPermissions.PermissionCallbacks {
     private TextView tv_username, tv_email;
-    private ImageView iv_avator;
+    private SimpleDraweeView iv_avator;
     private SmoothListView mMomentRv;
 
     NavigationView navigationView;
@@ -119,7 +121,7 @@ public class MainActivity extends AppCompatActivity
         navigationView = (NavigationView) findViewById(R.id.nav_view);
         tv_username = (TextView) navigationView.getHeaderView(0).findViewById(R.id.tv_username);
         tv_email = (TextView) navigationView.getHeaderView(0).findViewById(R.id.tv_email);
-        iv_avator = (ImageView) navigationView.getHeaderView(0).findViewById(R.id.iv_avator);
+        iv_avator = (SimpleDraweeView) navigationView.getHeaderView(0).findViewById(R.id.iv_avator);
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -158,8 +160,9 @@ public class MainActivity extends AppCompatActivity
                     viewHolder.setText(R.id.item_dynamic_title, item.getTitle());
                     viewHolder.setText(R.id.item_dynamic_content, item.getContent());
                     viewHolder.setText(R.id.item_dynamic_time, item.getCreatedAt());
-                    ImageView imageView = viewHolder.getView(R.id.iv_item_moment_avatar);
-                    Picasso.with(MainActivity.this).load(item.getUser_avator()).into(imageView);
+                    SimpleDraweeView imageView = viewHolder.getView(R.id.iv_item_moment_avatar);
+                    imageView.setImageURI(Uri.parse(item.getUser_avator()));
+
                 }
 
 
@@ -175,8 +178,8 @@ public class MainActivity extends AppCompatActivity
         if (KChatApp.getInstance().getBmobUser() != null) {
             tv_email.setText(KChatApp.getInstance().getBmobUser().getEmail());
             tv_username.setText(KChatApp.getInstance().getBmobUser().getUsername());
-            Picasso.with(MainActivity.this).load(KChatApp.getInstance().getBmobUser().getUser_avator() == null ? "http://ossweb-img.qq.com/upload/apps/ishow/176/thumb_1316413425_-1719592020_13323_sProdImgNo_1.jpg" : KChatApp.getInstance().getBmobUser().getUser_avator()).into(iv_avator);
 
+            iv_avator.setImageURI(Uri.parse(KChatApp.getInstance().getBmobUser().getUser_avator() == null ? "http://ossweb-img.qq.com/upload/apps/ishow/176/thumb_1316413425_-1719592020_13323_sProdImgNo_1.jpg" : KChatApp.getInstance().getBmobUser().getUser_avator()));
         }
         onRefresh();
 
@@ -189,57 +192,6 @@ public class MainActivity extends AppCompatActivity
     }
 
 
-    private class MyAdapter extends BaseAdapter {
-
-        private List<String> items;
-
-        public MyAdapter(List<String> items) {
-            this.items = items;
-        }
-
-        public void setData(List<String> items) {
-            this.items = items;
-            notifyDataSetChanged();
-        }
-
-        @Override
-        public int getCount() {
-            return items.size();
-        }
-
-        @Override
-        public String getItem(int position) {
-            return items.get(position);
-        }
-
-        @Override
-        public long getItemId(int position) {
-            return position;
-        }
-
-        @Override
-        public View getView(int position, View convertView, ViewGroup parent) {
-            ImgBox box=null;
-            if (convertView==null){
-                convertView=new ImageView(parent.getContext());
-                box=new ImgBox(parent.getContext());
-                convertView.setTag(box);
-            }else {
-                box= (ImgBox) convertView.getTag();
-            }
-
-            Picasso.with(convertView.getContext()).load(getItem(position)).into(box.imageView);
-
-            return convertView;
-        }
-        class ImgBox{
-            ImageView imageView;
-
-            public ImgBox(Context context) {
-                this.imageView = new ImageView(context);
-            }
-        }
-    }
     @Override
     public void onRefresh() {
         curPage = 1;

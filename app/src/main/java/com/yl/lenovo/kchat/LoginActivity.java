@@ -42,7 +42,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 
-import com.squareup.picasso.Picasso;
+import com.facebook.drawee.view.SimpleDraweeView;
 import com.yl.lenovo.kchat.bean.SplashAndLogin;
 import com.yl.lenovo.kchat.mvp.contract.UserContract;
 import com.yl.lenovo.kchat.mvp.presenter.UserPresenter;
@@ -80,7 +80,7 @@ public class LoginActivity extends AppCompatActivity implements UserContract.Use
     private AutoCompleteTextView mEmailView;
     private EditText mPasswordView;
     private TextView tv_regist;
-    private ImageView imageView;
+    private SimpleDraweeView imageView;
     private UserContract.UserPresenter presenter = new UserPresenter(this);
     private SQLiteDatabase db;
     private  Cursor cursor;
@@ -105,7 +105,7 @@ public class LoginActivity extends AppCompatActivity implements UserContract.Use
         // Set up the login form.
         mEmailView = (AutoCompleteTextView) findViewById(R.id.email);
         tv_regist = (TextView) findViewById(R.id.tv_regist);
-        imageView = (ImageView) findViewById(R.id.login_background_img);
+        imageView = (SimpleDraweeView) findViewById(R.id.login_background_img);
         mPasswordView = (EditText) findViewById(R.id.password);
         if (cursor != null) {
             if (cursor.moveToNext()) {
@@ -233,7 +233,7 @@ public class LoginActivity extends AppCompatActivity implements UserContract.Use
                         downloadFile(bmobfile);
 
                     }
-                    Picasso.with(LoginActivity.this).load(object.getLogin_url().getFileUrl()).into(imageView);
+                    imageView.setImageURI(Uri.parse(object.getLogin_url().getFileUrl()));
 
 
 
@@ -254,7 +254,8 @@ public class LoginActivity extends AppCompatActivity implements UserContract.Use
 
                         // Picasso.with(SplashActivity.this).load(R.mipmap.smoothlistview_arrow).into(imageView);
                     } else {
-                        Picasso.with(LoginActivity.this).load(img_path).into(imageView);
+                        imageView.setImageURI(Uri.parse(img_path));
+
                     }
 
 

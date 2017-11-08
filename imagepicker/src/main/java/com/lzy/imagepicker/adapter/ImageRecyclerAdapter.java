@@ -141,43 +141,50 @@ public class ImageRecyclerAdapter extends RecyclerView.Adapter<ViewHolder> {
         }
 
         void bind(final int position){
+
             final ImageItem imageItem = getItem(position);
-            ivThumb.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if (listener != null) listener.onImageItemClick(rootView, imageItem, position);
-                }
-            });
-            checkView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    cbCheck.setChecked(!cbCheck.isChecked());
-                    int selectLimit = imagePicker.getSelectLimit();
-                    if (cbCheck.isChecked() && mSelectedImages.size() >= selectLimit) {
-                        Toast.makeText(mActivity.getApplicationContext(), mActivity.getString(R.string.ip_select_limit, selectLimit), Toast.LENGTH_SHORT).show();
-                        cbCheck.setChecked(false);
-                        mask.setVisibility(View.GONE);
-                    } else {
-                        imagePicker.addSelectedImageItem(position, imageItem, cbCheck.isChecked());
-                        mask.setVisibility(View.VISIBLE);
+            if (imageItem!=null){
+                ivThumb.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        if (listener != null&&imageItem!=null) listener.onImageItemClick(rootView, imageItem, position);
                     }
-                }
-            });
-            //根据是否多选，显示或隐藏checkbox
-            if (imagePicker.isMultiMode()) {
-                cbCheck.setVisibility(View.VISIBLE);
-                boolean checked = mSelectedImages.contains(imageItem);
-                if (checked) {
-                    mask.setVisibility(View.VISIBLE);
-                    cbCheck.setChecked(true);
+                });
+                checkView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        cbCheck.setChecked(!cbCheck.isChecked());
+                        int selectLimit = imagePicker.getSelectLimit();
+                        if (cbCheck.isChecked() && mSelectedImages.size() >= selectLimit) {
+                            Toast.makeText(mActivity.getApplicationContext(), mActivity.getString(R.string.ip_select_limit, selectLimit), Toast.LENGTH_SHORT).show();
+                            cbCheck.setChecked(false);
+                            mask.setVisibility(View.GONE);
+                        } else {
+                            if (imageItem!=null){
+                                imagePicker.addSelectedImageItem(position, imageItem, cbCheck.isChecked());
+
+                            }
+                            mask.setVisibility(View.VISIBLE);
+                        }
+                    }
+                });
+                //根据是否多选，显示或隐藏checkbox
+                if (imagePicker.isMultiMode()) {
+                    cbCheck.setVisibility(View.VISIBLE);
+                    boolean checked = mSelectedImages.contains(imageItem);
+                    if (checked) {
+                        mask.setVisibility(View.VISIBLE);
+                        cbCheck.setChecked(true);
+                    } else {
+                        mask.setVisibility(View.GONE);
+                        cbCheck.setChecked(false);
+                    }
                 } else {
-                    mask.setVisibility(View.GONE);
-                    cbCheck.setChecked(false);
+                    cbCheck.setVisibility(View.GONE);
                 }
-            } else {
-                cbCheck.setVisibility(View.GONE);
+                imagePicker.getImageLoader().displayImage(mActivity, imageItem.path, ivThumb, mImageSize, mImageSize); //显示图片
             }
-            imagePicker.getImageLoader().displayImage(mActivity, imageItem.path, ivThumb, mImageSize, mImageSize); //显示图片
+
         }
 
     }

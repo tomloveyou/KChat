@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 
 
+import com.facebook.drawee.backends.pipeline.Fresco;
 import com.google.gson.Gson;
 
 import com.tencent.bugly.Bugly;
@@ -38,7 +39,7 @@ public class KChatApp extends Application {
         BmobInstallation.getCurrentInstallation().save();
         SQLiteDatabase.loadLibs(this);
         Bugly.init(getApplicationContext(), "36c94d9d95", false);
-
+        Fresco.initialize(this);
 // 启动推送服务
         BmobPush.startWork(this);
         sp = getSharedPreferences(SPUtils.SP_NAME, Context.MODE_PRIVATE);

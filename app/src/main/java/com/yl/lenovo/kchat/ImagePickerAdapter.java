@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
+import com.facebook.drawee.view.SimpleDraweeView;
 import com.lzy.imagepicker.ImagePicker;
 import com.lzy.imagepicker.bean.ImageItem;
 
@@ -80,12 +81,12 @@ public class ImagePickerAdapter extends RecyclerView.Adapter<ImagePickerAdapter.
 
     public class SelectedPicViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
-        private ImageView iv_img;
+        private SimpleDraweeView iv_img;
         private int clickPosition;
 
         public SelectedPicViewHolder(View itemView) {
             super(itemView);
-            iv_img = (ImageView) itemView.findViewById(R.id.iv_img);
+            iv_img = (SimpleDraweeView) itemView.findViewById(R.id.iv_img);
         }
 
         public void bind(int position) {

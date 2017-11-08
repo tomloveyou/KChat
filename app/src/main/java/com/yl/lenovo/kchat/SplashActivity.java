@@ -17,8 +17,9 @@ import android.util.Log;
 import android.view.WindowManager;
 import android.widget.ImageView;
 
+import com.bumptech.glide.Glide;
 import com.google.gson.Gson;
-import com.squareup.picasso.Picasso;
+
 import com.yl.lenovo.kchat.bean.SplashAndLogin;
 import com.yl.lenovo.kchat.utis.NetUtils;
 import com.yl.lenovo.kchat.utis.SPUtils;
@@ -171,7 +172,7 @@ public class SplashActivity extends Activity  implements EasyPermissions.Permiss
                         downloadFile(bmobfile);
 
                     }
-                    Picasso.with(SplashActivity.this).load(object.getSplash_url().getFileUrl()).into(imageView);
+                    Glide.with(SplashActivity.this).load(object.getSplash_url().getFileUrl()).into(imageView);
 
 
                 } else {
@@ -191,7 +192,7 @@ public class SplashActivity extends Activity  implements EasyPermissions.Permiss
 
                         // Picasso.with(SplashActivity.this).load(R.mipmap.smoothlistview_arrow).into(imageView);
                     } else {
-                        Picasso.with(SplashActivity.this).load(img_path).into(imageView);
+                        Glide.with(SplashActivity.this).load(img_path).into(imageView);
                     }
 
 
