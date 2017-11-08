@@ -26,6 +26,7 @@ import com.smile.filechoose.api.ImageChooserManager;
 import com.smile.filechoose.api.utils.ImageChooserBuilder;
 import com.smile.filechoose.api.utils.VideoChooserBuilder;
 import com.yl.lenovo.kchat.bean.Dynamic;
+
 import com.yl.lenovo.kchat.mvp.contract.FileContract;
 import com.yl.lenovo.kchat.mvp.presenter.FilePresenterImpl;
 import com.yl.lenovo.kchat.widget.dialog.DialogUtils;

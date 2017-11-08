@@ -42,14 +42,15 @@ public class KChatApp extends Application {
         Fresco.initialize(this);
 // 启动推送服务
         BmobPush.startWork(this);
-        sp = getSharedPreferences(SPUtils.SP_NAME, Context.MODE_PRIVATE);
+        SPUtils.init(this);
+
 
 
     }
 
     public MyUser getBmobUser() {
         if (bmobUser == null)
-            bmobUser = new Gson().fromJson(SPUtils.getString("userinfo"), MyUser.class);
+            bmobUser = new Gson().fromJson((String) SPUtils.get("userinfo",""), MyUser.class);
         return bmobUser;
     }
 

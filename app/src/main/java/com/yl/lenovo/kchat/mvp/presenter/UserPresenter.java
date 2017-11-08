@@ -80,7 +80,7 @@ public class UserPresenter extends BasePresenterImpl implements UserContract.Use
                 if(e==null){
                     KChatApp.getInstance().setBmobUser(bmobUser);
                     ;
-                    SPUtils.save("userinfo",new Gson().toJson(bmobUser));
+                    SPUtils.put("userinfo",new Gson().toJson(bmobUser));
                     userLoginView.loginsuccess();
                     //通过BmobUser user = BmobUser.getCurrentUser()获取登录成功后的本地用户信息
                     //如果是自定义用户对象MyUser，可通过MyUser user = BmobUser.getCurrentUser(MyUser.class)获取自定义用户信息
