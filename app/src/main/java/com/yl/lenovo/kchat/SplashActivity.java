@@ -1,14 +1,17 @@
 package com.yl.lenovo.kchat;
 
+import android.Manifest;
 import android.app.Activity;
 import android.content.ContentValues;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Environment;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.WindowManager;
@@ -27,6 +30,7 @@ import net.sqlcipher.database.SQLiteDatabase;
 import org.json.JSONObject;
 
 import java.io.File;
+import java.util.List;
 
 import cn.bmob.v3.BmobQuery;
 import cn.bmob.v3.datatype.BmobFile;
@@ -34,8 +38,10 @@ import cn.bmob.v3.exception.BmobException;
 import cn.bmob.v3.listener.DownloadFileListener;
 import cn.bmob.v3.listener.ProgressCallback;
 import cn.bmob.v3.listener.QueryListener;
+import pub.devrel.easypermissions.AfterPermissionGranted;
+import pub.devrel.easypermissions.EasyPermissions;
 
-public class SplashActivity extends Activity {
+public class SplashActivity extends Activity  implements EasyPermissions.PermissionCallbacks{
     private ImageView imageView;
     private SQLiteDatabase db;
     private Cursor cursor;
@@ -44,7 +50,8 @@ public class SplashActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         // 判断是否是第一次开启应用
-       getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        requestPermission();
         MyDatabaseStartImgHelper databaseStartImgHelper = new MyDatabaseStartImgHelper(this, "firstinit.db", null, 1);
         db = databaseStartImgHelper.getWritableDatabase("5123789");
 
@@ -79,6 +86,8 @@ public class SplashActivity extends Activity {
 
             Intent intent = new Intent(this, WelcomeGuideActivity.class);
             startActivity(intent);
+            cursor.close();
+            db.close();
             finish();
             return;
 
@@ -107,12 +116,11 @@ public class SplashActivity extends Activity {
                     ContentValues values = new ContentValues();
                     values.put("local_splash_url", savePath);
 
-                    if (cursor.getString(0)!=null){
-                        db.insert("StartImg", null,values);
-                    }else {
-                        db.update("StartImg", values,null ,null);
+                    if (cursor.getString(0) != null) {
+                        db.insert("StartImg", null, values);
+                    } else {
+                        db.update("StartImg", values, null, null);
                     }
-
 
 
                     //toast("下载成功,保存路径:"+savePath);
@@ -151,7 +159,7 @@ public class SplashActivity extends Activity {
                         if (!object.getSplash_url().getFileUrl().equals(cursor.getString(1))) {
                             ContentValues values = new ContentValues();
                             values.put("splash_url", object.getSplash_url().getFileUrl());
-                            db.update("StartImg", values,null,null);
+                            db.update("StartImg", values, null, null);
                             BmobFile bmobfile = new BmobFile("splash_img.jpg", "", object.getSplash_url().getFileUrl());
                             downloadFile(bmobfile);
                         }
@@ -164,7 +172,6 @@ public class SplashActivity extends Activity {
 
                     }
                     Picasso.with(SplashActivity.this).load(object.getSplash_url().getFileUrl()).into(imageView);
-
 
 
                 } else {
@@ -204,6 +211,34 @@ public class SplashActivity extends Activity {
 
         });
     }
+    @AfterPermissionGranted(12)
+    private void requestPermission() {
+        String[] perms = {Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE};
+        if (EasyPermissions.hasPermissions(this, perms)) {
+            // Already have permission, do the thing
+            // ...
+        } else {
+            // Do not have permissions, request them now
+            EasyPermissions.requestPermissions(this, "",
+                    12, perms);
+        }
+    }
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+        // Forward results to EasyPermissions
+        EasyPermissions.onRequestPermissionsResult(requestCode, permissions, grantResults, this);
+    }
 
 
+    @Override
+    public void onPermissionsGranted(int requestCode, List<String> perms) {
+
+    }
+
+    @Override
+    public void onPermissionsDenied(int requestCode, List<String> perms) {
+
+    }
 }
