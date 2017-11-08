@@ -64,13 +64,12 @@ dependencies {
     compile 'pub.devrel:easypermissions:0.2.1'
     //图片选择及裁剪
     compile 'cn.bingoogolapple:bga-photopicker:1.2.3@aar'
-    compile 'com.github.chrisbanes.photoview:library:1.2.4'
-    compile 'com.lzy.widget:view-core:0.2.1'
     compile 'com.lzy.widget:imagepicker:0.6.1'
     //崩溃收集，以及app升级
     compile 'com.tencent.bugly:crashreport_upgrade:1.2.0'
     compile 'com.tencent.bugly:nativecrashreport:2.2.0'
-
+    //常用view
+    compile 'com.lzy.widget:view-core:0.2.1'
     //图片加载库
     compile 'com.facebook.fresco:fresco:0.12.0'
     compile 'com.github.bumptech.glide:glide:3.7.0'
