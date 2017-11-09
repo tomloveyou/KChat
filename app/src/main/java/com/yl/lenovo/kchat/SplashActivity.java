@@ -38,42 +38,24 @@ import cn.bmob.v3.listener.QueryListener;
 
 public class SplashActivity extends Activity {
     private ImageView imageView;
-    private SQLiteDatabase db;
-    private Cursor cursor;
+    String path;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         // 判断是否是第一次开启应用
-       getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
-        MyDatabaseStartImgHelper databaseStartImgHelper = new MyDatabaseStartImgHelper(this, "firstinit.db", null, 1);
-        db = databaseStartImgHelper.getWritableDatabase("5123789");
-
-        cursor = db.query("StartImg", new String[]{"local_splash_url", "splash_url"}, null, null, null, null, null);
-
-        if (cursor != null) {
-            if (cursor.moveToNext()) {
-                String path = cursor.getString(0);
-                Bitmap bitmap = null;
-                if (path != null) {
-                    bitmap = BitmapFactory.decodeFile(path);
-                } else {
-                    bitmap = BitmapFactory.decodeResource(getResources(), R.mipmap.splash);
-                }
-                Drawable drawable = new BitmapDrawable(null, bitmap);
-                getWindow().setBackgroundDrawable(drawable);
-            } else {
-                Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.bg_btn_trans_round_n);
-                Drawable drawable = new BitmapDrawable(null, bitmap);
-                getWindow().setBackgroundDrawable(drawable);
-            }
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        path = (String) SPUtils.get(SplashActivity.this, "local_splash_url", "");
+        Bitmap bitmap = null;
+        if (path != null) {
+            bitmap = BitmapFactory.decodeFile(path);
         } else {
-            Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.bg_btn_trans_round_n);
-            Drawable drawable = new BitmapDrawable(null, bitmap);
-            getWindow().setBackgroundDrawable(drawable);
+            bitmap = BitmapFactory.decodeResource(getResources(), R.mipmap.splash);
         }
+        Drawable drawable = new BitmapDrawable(null, bitmap);
+        getWindow().setBackgroundDrawable(drawable);
 
-        boolean isFirstOpen = SPUtils.getBoolean("FIRST_OPEN");
+        boolean isFirstOpen = (boolean) SPUtils.get(SplashActivity.this, "FIRST_OPEN", "");
 
         // 如果是第一次启动，则先进入功能引导页
         if (!isFirstOpen) {
@@ -105,15 +87,8 @@ public class SplashActivity extends Activity {
             @Override
             public void done(String savePath, BmobException e) {
                 if (e == null) {
-                    ContentValues values = new ContentValues();
-                    values.put("local_splash_url", savePath);
 
-                    if (cursor.getString(0)!=null){
-                        db.insert("StartImg", null,values);
-                    }else {
-                        db.update("StartImg", values,null ,null);
-                    }
-
+                    SPUtils.put(SplashActivity.this, "local_splash_url", savePath);
 
 
                     //toast("下载成功,保存路径:"+savePath);
@@ -124,8 +99,7 @@ public class SplashActivity extends Activity {
                     @Override
                     public void run() {
                         startActivity(new Intent(SplashActivity.this, LoginActivity.class));
-                        cursor.close();
-                        db.close();
+
                         finish();
                     }
                 }, 2000);
@@ -152,7 +126,7 @@ public class SplashActivity extends Activity {
                         if (!object.getSplash_url().getFileUrl().equals(cursor.getString(1))) {
                             ContentValues values = new ContentValues();
                             values.put("splash_url", object.getSplash_url().getFileUrl());
-                            db.update("StartImg", values,null,null);
+                            db.update("StartImg", values, null, null);
                             BmobFile bmobfile = new BmobFile("splash_img.jpg", "", object.getSplash_url().getFileUrl());
                             downloadFile(bmobfile);
                         }
@@ -165,7 +139,6 @@ public class SplashActivity extends Activity {
 
                     }
                     Glide.with(SplashActivity.this).load(object.getSplash_url().getFileUrl()).into(imageView);
-
 
 
                 } else {

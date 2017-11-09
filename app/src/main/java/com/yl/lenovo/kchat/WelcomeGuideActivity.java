@@ -4,9 +4,16 @@ package com.yl.lenovo.kchat;
  * Created by lenovo on 2017/7/1.
  */
 
+import android.Manifest;
 import android.app.Activity;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.RequiresApi;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -17,6 +24,7 @@ import android.widget.LinearLayout;
 
 
 import com.bumptech.glide.Glide;
+import com.facebook.drawee.view.SimpleDraweeView;
 import com.yl.lenovo.kchat.bean.leadimg;
 import com.yl.lenovo.kchat.utis.SPUtils;
 
@@ -50,11 +58,14 @@ public class WelcomeGuideActivity extends Activity implements View.OnClickListen
     // 记录当前选中位置
     private int currentIndex;
 
+    @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_guide);
-
+        if (!checkPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+            requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE,Manifest.permission.READ_EXTERNAL_STORAGE}, 12);
+        }
         views = new ArrayList<View>();
 
         // 初始化引导页视图列表
@@ -68,39 +79,46 @@ public class WelcomeGuideActivity extends Activity implements View.OnClickListen
         getleadimg();
 
     }
-private void  getleadimg(){
-    BmobQuery<leadimg> query = new BmobQuery<leadimg>();
 
-    query.findObjects(new FindListener<leadimg>() {
-        @Override
-        public void done(List<leadimg> object, BmobException e) {
-            if(e==null){
+    public boolean checkPermission(@NonNull String permission) {
+        return ActivityCompat.checkSelfPermission(this, permission) == PackageManager.PERMISSION_GRANTED;
+    }
 
-                for (leadimg gameScore : object) {
-                    leader_data_urls.add(gameScore.getImg_url().getFileUrl());
-                }
-                for (int i = 0; i < leader_data_urls.size(); i++) {
-                    View view = LayoutInflater.from(WelcomeGuideActivity.this).inflate(R.layout.guid_view1, null);
-                    ImageView guid_view = (ImageView) view.findViewById(R.id.guid_view_img);
-                    Glide.with(WelcomeGuideActivity.this).load(leader_data_urls.get(i)).into(guid_view);
-                    if (i == leader_data_urls.size() - 1) {
+    private void getleadimg() {
+        BmobQuery<leadimg> query = new BmobQuery<leadimg>();
 
-                        startBtn.setTag("enter");
-                        startBtn.setOnClickListener(WelcomeGuideActivity.this);
+        query.findObjects(new FindListener<leadimg>() {
+            @Override
+            public void done(List<leadimg> object, BmobException e) {
+                if (e == null) {
+
+                    for (leadimg gameScore : object) {
+                        leader_data_urls.add(gameScore.getImg_url().getFileUrl());
                     }
+                    for (int i = 0; i < leader_data_urls.size(); i++) {
+                        View view = LayoutInflater.from(WelcomeGuideActivity.this).inflate(R.layout.guid_view1, null);
+                        SimpleDraweeView guid_view = (SimpleDraweeView) view.findViewById(R.id.guid_view_img);
+                        guid_view.setImageURI(Uri.parse(leader_data_urls.get(i)));
 
-                    views.add(view);
+                        if (i == leader_data_urls.size() - 1) {
 
+                            startBtn.setTag("enter");
+                            startBtn.setOnClickListener(WelcomeGuideActivity.this);
+                        }
+
+                        views.add(view);
+
+                    }
+                    adapter.notifyDataSetChanged();
+
+                    initDots();
+                } else {
+                    Log.i("bmob", "失败：" + e.getMessage() + "," + e.getErrorCode());
                 }
-                adapter.notifyDataSetChanged();
-
-                initDots();
-            }else{
-                Log.i("bmob","失败："+e.getMessage()+","+e.getErrorCode());
             }
-        }
-    });
-}
+        });
+    }
+
     @Override
     protected void onResume() {
         super.onResume();
@@ -114,7 +132,6 @@ private void  getleadimg(){
         SPUtils.save("FIRST_OPEN", true);
         finish();
     }
-
 
 
     @Override
@@ -169,7 +186,7 @@ private void  getleadimg(){
         if (position < 0 || position > leader_data_urls.size() || currentIndex == position) {
             return;
         }
-        startBtn.setVisibility(position==leader_data_urls.size()-1?View.VISIBLE:View.GONE);
+        startBtn.setVisibility(position == leader_data_urls.size() - 1 ? View.VISIBLE : View.GONE);
         dots[position].setEnabled(true);
         dots[currentIndex].setEnabled(false);
         currentIndex = position;

@@ -10,8 +10,6 @@ import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 
-
-
 /**
  * 跟网络相关的工具类
  *
@@ -35,7 +33,7 @@ public class NetUtils
     public static boolean isConnected(Context context)
     {
         if (context == null) {
-          // LogUtil.d(context.getPackageName(),"传进来的context实例为空！");
+            L.d("传进来的context实例为空！");
         }
         ConnectivityManager connectivity = (ConnectivityManager) context
                 .getSystemService(Context.CONNECTIVITY_SERVICE);

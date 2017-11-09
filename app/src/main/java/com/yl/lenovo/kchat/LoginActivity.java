@@ -185,7 +185,7 @@ public class LoginActivity extends AppCompatActivity implements UserContract.Use
                     ContentValues values = new ContentValues();
                     values.put("local_login_url", savePath);
 
-                    if (cursor.getString(0)!=null){
+                    if (cursor.moveToNext()){
                         db.insert("StartImg", null,values);
                     }else {
                         db.update("StartImg", values,null ,null);
