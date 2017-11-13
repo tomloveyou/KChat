@@ -79,7 +79,7 @@ public class AppPresenterImpl extends BasePresenterImpl<String> implements AppCo
             @Override
             public void done(SplashAndLogin object, BmobException e) {
                 if(e==null){
-                    SPUtils.save("login_background",object.getLogin_url().getFileUrl());
+                    SPUtils.put("login_background",object.getLogin_url().getFileUrl());
 
                 }else{
                     Log.i("bmob","失败："+e.getMessage()+","+e.getErrorCode());

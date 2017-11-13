@@ -82,21 +82,19 @@ public class LoginActivity extends AppCompatActivity implements UserContract.Use
     private TextView tv_regist;
     private SimpleDraweeView imageView;
     private UserContract.UserPresenter presenter = new UserPresenter(this);
-    private SQLiteDatabase db;
-    private  Cursor cursor;
+    private String path;
     @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        MyDatabaseStartImgHelper databaseStartImgHelper = new MyDatabaseStartImgHelper(this, "firstinit.db", null, 1);
-        db = databaseStartImgHelper.getWritableDatabase("5123789");
-       cursor = db.query("StartImg", new String[]{"local_login_url","login_url"}, null, null, null, null, null);
-
-        if (SPUtils.getString("userinfo") != null && !"".equals(SPUtils.getString("userinfo"))) {
-            startActivity(new Intent(LoginActivity.this, MainActivity.class));
-            finish();
-            return;
+        path = (String) SPUtils.get("local_splash_url", "");
+        Bitmap bitmap = null;
+        if ("".equals(path)) {
+            bitmap = BitmapFactory.decodeResource(getResources(), R.mipmap.splash);
+        } else {
+            bitmap = BitmapFactory.decodeFile(path);
         }
+        imageView.setImageURI(Uri.fromFile(new File(path)));
 
         setContentView(R.layout.activity_login);
         if (ContextCompat.checkSelfPermission(LoginActivity.this, android.Manifest.permission.WRITE_EXTERNAL_STORAGE)!=PackageManager.PERMISSION_GRANTED){
@@ -107,27 +105,7 @@ public class LoginActivity extends AppCompatActivity implements UserContract.Use
         tv_regist = (TextView) findViewById(R.id.tv_regist);
         imageView = (SimpleDraweeView) findViewById(R.id.login_background_img);
         mPasswordView = (EditText) findViewById(R.id.password);
-        if (cursor != null) {
-            if (cursor.moveToNext()) {
-                String path = cursor.getString(0);
-                Bitmap bitmap = null;
-                if (path != null) {
-                    bitmap = BitmapFactory.decodeFile(path);
-                } else {
-                    bitmap = BitmapFactory.decodeResource(getResources(), R.mipmap.splash);
-                }
-                Drawable drawable = new BitmapDrawable(null, bitmap);
-                getWindow().setBackgroundDrawable(drawable);
-            } else {
-                Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.bg_btn_trans_round_n);
-                Drawable drawable = new BitmapDrawable(null, bitmap);
-                getWindow().setBackgroundDrawable(drawable);
-            }
-        } else {
-            Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.bg_btn_trans_round_n);
-            Drawable drawable = new BitmapDrawable(null, bitmap);
-            getWindow().setBackgroundDrawable(drawable);
-        }
+
         getImgData();
 
         mPasswordView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
@@ -171,7 +149,7 @@ public class LoginActivity extends AppCompatActivity implements UserContract.Use
 
     private void downloadFile(BmobFile file) {
         //允许设置下载文件的存储路径，默认下载文件的目录为：context.getApplicationContext().getCacheDir()+"/bmob/"
-        File saveFile = new File(Environment.getExternalStorageDirectory(), file.getFilename());
+        final File saveFile = new File(Environment.getExternalStorageDirectory(), file.getFilename());
         file.download(saveFile, new DownloadFileListener() {
 
             @Override
@@ -182,14 +160,7 @@ public class LoginActivity extends AppCompatActivity implements UserContract.Use
             @Override
             public void done(String savePath, BmobException e) {
                 if (e == null) {
-                    ContentValues values = new ContentValues();
-                    values.put("local_login_url", savePath);
-
-                    if (cursor.moveToNext()){
-                        db.insert("StartImg", null,values);
-                    }else {
-                        db.update("StartImg", values,null ,null);
-                    }
+                    SPUtils.put("local_splash_url", savePath);
 
 
 
@@ -217,46 +188,12 @@ public class LoginActivity extends AppCompatActivity implements UserContract.Use
             public void done(SplashAndLogin object, BmobException e) {
                 if (e == null) {
 
-                    if (cursor.moveToNext()) {
-                        if (!object.getLogin_url().getFileUrl().equals(cursor.getString(1))) {
-                            ContentValues values = new ContentValues();
-                            values.put("login_url", object.getLogin_url().getFileUrl());
-                            db.update("StartImg", values,null,null);
-                            BmobFile bmobfile = new BmobFile("login_img.jpg", "", object.getLogin_url().getFileUrl());
-                            downloadFile(bmobfile);
-                        }
-                    } else {
-                        ContentValues values = new ContentValues();
-                        values.put("login_url", object.getLogin_url().getFileUrl());
-                        db.insert("StartImg", null, values);
-                        BmobFile bmobfile = new BmobFile("login_img.jpg", "", object.getLogin_url().getFileUrl());
-                        downloadFile(bmobfile);
-
-                    }
+                    SPUtils.put("local_splash_url", object.getSplash_url().getFileUrl());
                     imageView.setImageURI(Uri.parse(object.getLogin_url().getFileUrl()));
 
 
 
                 } else {
-                    String img_path = null;
-
-                    try {
-                        img_path = cursor.getString(1);
-                    } catch (Exception e1) {
-                        img_path = null;
-                        Bitmap bitmap = BitmapFactory.decodeFile(cursor.getString(0));
-                        imageView.setImageBitmap(bitmap);
-                    }
-
-                    if (img_path == null) {
-                        Bitmap bitmap = BitmapFactory.decodeFile(cursor.getString(0));
-                        imageView.setImageBitmap(bitmap);
-
-                        // Picasso.with(SplashActivity.this).load(R.mipmap.smoothlistview_arrow).into(imageView);
-                    } else {
-                        imageView.setImageURI(Uri.parse(img_path));
-
-                    }
 
 
                 }

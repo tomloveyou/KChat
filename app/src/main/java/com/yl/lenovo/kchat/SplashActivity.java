@@ -1,14 +1,17 @@
 package com.yl.lenovo.kchat;
 
+import android.Manifest;
 import android.app.Activity;
 import android.content.ContentValues;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Environment;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.WindowManager;
@@ -28,6 +31,7 @@ import net.sqlcipher.database.SQLiteDatabase;
 import org.json.JSONObject;
 
 import java.io.File;
+import java.util.List;
 
 import cn.bmob.v3.BmobQuery;
 import cn.bmob.v3.datatype.BmobFile;
@@ -35,33 +39,37 @@ import cn.bmob.v3.exception.BmobException;
 import cn.bmob.v3.listener.DownloadFileListener;
 import cn.bmob.v3.listener.ProgressCallback;
 import cn.bmob.v3.listener.QueryListener;
+import pub.devrel.easypermissions.AfterPermissionGranted;
+import pub.devrel.easypermissions.EasyPermissions;
 
 public class SplashActivity extends Activity {
     private ImageView imageView;
-    String path;
+    private String path;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         // 判断是否是第一次开启应用
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
-        path = (String) SPUtils.get(SplashActivity.this, "local_splash_url", "");
+        path = (String) SPUtils.get("local_splash_url", "");
         Bitmap bitmap = null;
-        if (path != null) {
-            bitmap = BitmapFactory.decodeFile(path);
-        } else {
+        if ("".equals(path)) {
             bitmap = BitmapFactory.decodeResource(getResources(), R.mipmap.splash);
+        } else {
+            bitmap = BitmapFactory.decodeFile(path);
         }
         Drawable drawable = new BitmapDrawable(null, bitmap);
         getWindow().setBackgroundDrawable(drawable);
 
-        boolean isFirstOpen = (boolean) SPUtils.get(SplashActivity.this, "FIRST_OPEN", "");
+
+        boolean isFirstOpen = (boolean) SPUtils.get("FIRST_OPEN", false);
 
         // 如果是第一次启动，则先进入功能引导页
         if (!isFirstOpen) {
 
             Intent intent = new Intent(this, WelcomeGuideActivity.class);
             startActivity(intent);
+
             finish();
             return;
 
@@ -88,12 +96,9 @@ public class SplashActivity extends Activity {
             public void done(String savePath, BmobException e) {
                 if (e == null) {
 
-                    SPUtils.put(SplashActivity.this, "local_splash_url", savePath);
-
+                    SPUtils.put( "local_splash_url", savePath);
 
                     //toast("下载成功,保存路径:"+savePath);
-                } else {
-                    //toast("下载失败："+e.getErrorCode()+","+e.getMessage());
                 }
                 imageView.postDelayed(new Runnable() {
                     @Override
@@ -122,62 +127,16 @@ public class SplashActivity extends Activity {
             public void done(SplashAndLogin object, BmobException e) {
                 if (e == null) {
 
-                    if (cursor.moveToNext()) {
-                        if (!object.getSplash_url().getFileUrl().equals(cursor.getString(1))) {
-                            ContentValues values = new ContentValues();
-                            values.put("splash_url", object.getSplash_url().getFileUrl());
-                            db.update("StartImg", values, null, null);
-                            BmobFile bmobfile = new BmobFile("splash_img.jpg", "", object.getSplash_url().getFileUrl());
-                            downloadFile(bmobfile);
-                        }
-                    } else {
-                        ContentValues values = new ContentValues();
-                        values.put("splash_url", object.getSplash_url().getFileUrl());
-                        db.insert("StartImg", null, values);
-                        BmobFile bmobfile = new BmobFile("splash_img.jpg", "", object.getSplash_url().getFileUrl());
-                        downloadFile(bmobfile);
-
-                    }
+                    SPUtils.put( "local_splash_url", object.getSplash_url().getFileUrl());
                     Glide.with(SplashActivity.this).load(object.getSplash_url().getFileUrl()).into(imageView);
 
 
-                } else {
-                    String img_path = null;
-
-                    try {
-                        img_path = cursor.getString(1);
-                    } catch (Exception e1) {
-                        img_path = null;
-                        Bitmap bitmap = BitmapFactory.decodeFile(cursor.getString(0));
-                        imageView.setImageBitmap(bitmap);
-                    }
-
-                    if (img_path == null) {
-                        Bitmap bitmap = BitmapFactory.decodeFile(cursor.getString(0));
-                        imageView.setImageBitmap(bitmap);
-
-                        // Picasso.with(SplashActivity.this).load(R.mipmap.smoothlistview_arrow).into(imageView);
-                    } else {
-                        Glide.with(SplashActivity.this).load(img_path).into(imageView);
-                    }
-
-
                 }
-                imageView.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        startActivity(new Intent(SplashActivity.this, LoginActivity.class));
-                        cursor.close();
-                        db.close();
-                        finish();
-                    }
-                }, 2000);
 
             }
 
 
         });
     }
-
 
 }
