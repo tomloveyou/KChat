@@ -75,10 +75,8 @@ public class DynamicReleaseActivity extends BaseActvity implements ImagePickerAd
                         //2、urls-上传文件的完整url地址
                         Dynamic dynamic = new Dynamic();
                         dynamic.setImg_list(urls);
-                        dynamic.setTitle(user.getNickname());
                         dynamic.setContent(mContentEt.getText().toString());
-                        dynamic.setUser_avator(user.getUser_avator());
-                        dynamic.setOwer(user.getObjectId());
+                        dynamic.setAuthor(user);
                         dynamic.save(new SaveListener<String>() {
                             @Override
                             public void done(String s, BmobException e) {
