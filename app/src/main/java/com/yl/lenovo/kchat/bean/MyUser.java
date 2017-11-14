@@ -9,7 +9,7 @@ import cn.bmob.v3.datatype.BmobRelation;
  */
 
 public class MyUser extends BmobUser {
-    private int sex;
+    private int sex=0;//0是男1是女
     private String user_avator;
     private String nickname;
     private BmobRelation favorite;

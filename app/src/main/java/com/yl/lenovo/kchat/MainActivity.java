@@ -141,7 +141,7 @@ public class MainActivity extends AppCompatActivity
                 viewHolder.setText(R.id.item_dynamic_content, item.getContent());
                 viewHolder.setText(R.id.item_dynamic_time, item.getCreatedAt());
                 SimpleDraweeView imageView = viewHolder.getView(R.id.iv_item_moment_avatar);
-                imageView.setImageURI(Uri.parse(item.getAuthor()!=null?item.getAuthor().getUser_avator():"https://www.baidu.com/s?wd=%E9%83%AB%E5%8E%BF&rsv_idx=2&tn=98012088_5_dg&ch=12&usm=1&ie=utf-8&rsv_cq=%E6%88%90%E9%83%BD%E8%8D%89%E5%A0%82%E5%8C%97%E8%B7%AF%E9%82%AE%E7%BC%96&rsv_dl=0_right_recommends_merge_28335&euri=244256"));
+                imageView.setImageURI(Uri.parse(Constant.getUser_avator(item.getAuthor())));
                 viewHolder.setOnClickListener(R.id.iv_comment, new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
