@@ -3,6 +3,7 @@ package com.yl.lenovo.kchat;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
+import android.app.Dialog;
 import android.content.ContentValues;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -30,19 +31,26 @@ import android.provider.ContactsContract;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.KeyEvent;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.view.inputmethod.EditorInfo;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 
+import com.bumptech.glide.Glide;
+import com.facebook.drawee.interfaces.DraweeController;
 import com.facebook.drawee.view.SimpleDraweeView;
+
 import com.yl.lenovo.kchat.bean.SplashAndLogin;
 import com.yl.lenovo.kchat.mvp.contract.UserContract;
 import com.yl.lenovo.kchat.mvp.presenter.UserPresenter;
@@ -83,28 +91,24 @@ public class LoginActivity extends AppCompatActivity implements UserContract.Use
     private SimpleDraweeView imageView;
     private UserContract.UserPresenter presenter = new UserPresenter(this);
     private String path;
+    private Dialog dialog;
+
     @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        path = (String) SPUtils.get("local_splash_url", "");
-        Bitmap bitmap = null;
-        if ("".equals(path)) {
-            bitmap = BitmapFactory.decodeResource(getResources(), R.mipmap.splash);
-        } else {
-            bitmap = BitmapFactory.decodeFile(path);
-        }
-        imageView.setImageURI(Uri.fromFile(new File(path)));
-
+        path = (String) SPUtils.get("local_login_url", "");
         setContentView(R.layout.activity_login);
-        if (ContextCompat.checkSelfPermission(LoginActivity.this, android.Manifest.permission.WRITE_EXTERNAL_STORAGE)!=PackageManager.PERMISSION_GRANTED){
-            requestPermissions(new String[]{android.Manifest.permission.WRITE_EXTERNAL_STORAGE},112);
+        if (ContextCompat.checkSelfPermission(LoginActivity.this, android.Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            requestPermissions(new String[]{android.Manifest.permission.WRITE_EXTERNAL_STORAGE}, 112);
         }
         // Set up the login form.
         mEmailView = (AutoCompleteTextView) findViewById(R.id.email);
         tv_regist = (TextView) findViewById(R.id.tv_regist);
         imageView = (SimpleDraweeView) findViewById(R.id.login_background_img);
         mPasswordView = (EditText) findViewById(R.id.password);
+
+        imageView.setImageURI(Uri.fromFile(new File(path)));
 
         getImgData();
 
@@ -113,10 +117,11 @@ public class LoginActivity extends AppCompatActivity implements UserContract.Use
             public boolean onEditorAction(TextView textView, int id, KeyEvent keyEvent) {
                 if (id == R.id.login || id == EditorInfo.IME_NULL) {
                     if (verify()) {
-
-                        DialogUtils.showProgressDialog(LoginActivity.this, "登录中，请稍后……");
+                        dialog = createLoadingDialog("登录中，别急嘛……", true, 0);
+                        dialog.show();
+                        presenter.login(mEmailView.getText().toString(), mPasswordView.getText().toString());
                     }
-                    presenter.login(mEmailView.getText().toString(), mPasswordView.getText().toString());
+
                     return true;
                 }
                 return false;
@@ -127,8 +132,12 @@ public class LoginActivity extends AppCompatActivity implements UserContract.Use
         mEmailSignInButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (verify())
+                if (verify()){
+                    dialog = createLoadingDialog("登录中，别急嘛……", true, 0);
+                    dialog.show();
                     presenter.login(mEmailView.getText().toString(), mPasswordView.getText().toString());
+                }
+
             }
         });
         tv_regist.setOnClickListener(new OnClickListener() {
@@ -137,7 +146,50 @@ public class LoginActivity extends AppCompatActivity implements UserContract.Use
                 startActivity(new Intent(LoginActivity.this, RegistActivity.class));
             }
         });
+        findViewById(R.id.tv_forgot_pwd).setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(LoginActivity.this, ForgotPwdActivity.class));
+            }
+        });
 
+
+    }
+
+    protected Dialog createLoadingDialog(String msg, boolean isAnimation, int imageId) {
+
+        LayoutInflater inflater = LayoutInflater.from(this);
+        View v = inflater.inflate(R.layout.loading_layout, null);// 得到加载view
+        LinearLayout layout = (LinearLayout) v.findViewById(R.id.dialog_view);// 加载布局
+        // main.xml中的ImageView
+        ImageView spaceshipImage = (ImageView) v.findViewById(R.id.img_loading);
+        TextView tipTextView = (TextView) v.findViewById(R.id.tipTextView);// 提示文字
+
+        if (imageId != 0) {
+            spaceshipImage.setImageResource(imageId);
+        }
+        if (isAnimation) {
+            // 加载动画
+            Animation hyperspaceJumpAnimation = AnimationUtils.loadAnimation(
+                    this, R.anim.loading_animation);
+            // 使用ImageView显示动画
+            spaceshipImage.startAnimation(hyperspaceJumpAnimation);
+        }
+
+        if (TextUtils.isEmpty(msg)) {
+            tipTextView.setVisibility(View.GONE);
+        } else {
+            tipTextView.setVisibility(View.VISIBLE);
+            tipTextView.setText(msg);// 设置加载信息
+        }
+
+        Dialog loadingDialog = new Dialog(this, R.style.loading_dialog);// 创建自定义样式dialog
+
+        loadingDialog.setCancelable(true);// 不可以用“返回键”取消
+        loadingDialog.setContentView(layout, new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.MATCH_PARENT));// 设置布局
+        return loadingDialog;
 
     }
 
@@ -160,9 +212,7 @@ public class LoginActivity extends AppCompatActivity implements UserContract.Use
             @Override
             public void done(String savePath, BmobException e) {
                 if (e == null) {
-                    SPUtils.put("local_splash_url", savePath);
-
-
+                    SPUtils.put("local_login_url", savePath);
 
                     //toast("下载成功,保存路径:"+savePath);
                 } else {
@@ -187,10 +237,18 @@ public class LoginActivity extends AppCompatActivity implements UserContract.Use
             @Override
             public void done(SplashAndLogin object, BmobException e) {
                 if (e == null) {
-
-                    SPUtils.put("local_splash_url", object.getSplash_url().getFileUrl());
-                    imageView.setImageURI(Uri.parse(object.getLogin_url().getFileUrl()));
-
+                    String origin = (String) SPUtils.get("login_url", null);
+                    if (origin != null) {
+                        if (!origin.equals(object.getLogin_url().getFileUrl())) {
+                            SPUtils.put("login_url", object.getLogin_url().getFileUrl());
+                            downloadFile(new BmobFile("local_login_url", null, object.getLogin_url().getFileUrl()));
+                            imageView.setImageURI(Uri.parse(object.getLogin_url().getFileUrl()));
+                        }
+                    } else {
+                        SPUtils.put("login_url", object.getLogin_url().getFileUrl());
+                        downloadFile(new BmobFile("local_login_url", null, object.getLogin_url().getFileUrl()));
+                        imageView.setImageURI(Uri.parse(object.getLogin_url().getFileUrl()));
+                    }
 
 
                 } else {
@@ -221,13 +279,14 @@ public class LoginActivity extends AppCompatActivity implements UserContract.Use
 
     @Override
     public void loginsuccess() {
-        DialogUtils.dismiss();
+        dialog.dismiss();
         startActivity(new Intent(this, MainActivity.class));
         finish();
     }
 
     @Override
     public void error(String msg) {
+        dialog.dismiss();
         Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
     }
 }

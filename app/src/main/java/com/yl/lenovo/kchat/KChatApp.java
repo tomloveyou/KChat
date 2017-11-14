@@ -26,7 +26,7 @@ import cn.bmob.v3.BmobInstallation;
 public class KChatApp extends Application {
 
     public static SharedPreferences sp;// 保存一些需要持久化的小数据
-    MyUser bmobUser;
+
     public static KChatApp application;
 
     @Override
@@ -48,15 +48,6 @@ public class KChatApp extends Application {
 
     }
 
-    public MyUser getBmobUser() {
-        if (bmobUser == null)
-            bmobUser = new Gson().fromJson((String) SPUtils.get("userinfo",""), MyUser.class);
-        return bmobUser;
-    }
-
-    public void setBmobUser(MyUser bmobUser) {
-        this.bmobUser = bmobUser;
-    }
 
     public static KChatApp getInstance() {
         // TODO Auto-generated method stub

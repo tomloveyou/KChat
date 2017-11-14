@@ -107,10 +107,6 @@
             android:name=".WelcomeGuideActivity"
             android:exported="true"
             android:screenOrientation="portrait" />
-        <activity
-            android:name=".ReleaseActivity"
-            android:exported="true" />
-
         <activity android:name=".MessageActivity" />
         <activity android:name=".stick.TravelActivity" />
         <activity
@@ -141,7 +137,8 @@
                 android:resource="@xml/provider_paths" />
         </provider>
 
-        <activity android:name=".WxDemoActivity"/>
+        <activity android:name=".DynamicReleaseActivity" />
+        <activity android:name=".ForgotPwdActivity"></activity>
     </application>
 
 </manifest>

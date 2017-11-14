@@ -42,7 +42,7 @@ import pub.devrel.easypermissions.EasyPermissions;
  *
  * @author wwj_748
  */
-public class WelcomeGuideActivity extends Activity implements EasyPermissions.PermissionCallbacks {
+public class WelcomeGuideActivity extends Activity {
 
     private static final String TAG = WelcomeGuideActivity.class.getSimpleName();
     private BGABanner mBackgroundBanner;
@@ -55,7 +55,7 @@ public class WelcomeGuideActivity extends Activity implements EasyPermissions.Pe
         initView();
         setListener();
         processLogic();
-        requestPermission();
+
 
 
     }
@@ -87,6 +87,7 @@ public class WelcomeGuideActivity extends Activity implements EasyPermissions.Pe
         mBackgroundBanner.setEnterSkipViewIdAndDelegate(R.id.btn_guide_enter, R.id.tv_guide_skip, new BGABanner.GuideDelegate() {
             @Override
             public void onClickEnterOrSkip() {
+                SPUtils.put("FIRST_OPEN",false);
                 startActivity(new Intent(WelcomeGuideActivity.this, MainActivity.class));
                 finish();
             }
@@ -110,37 +111,6 @@ public class WelcomeGuideActivity extends Activity implements EasyPermissions.Pe
         });
     }
 
-    @AfterPermissionGranted(12)
-    private void requestPermission() {
-        String[] perms = {Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE};
-        if (EasyPermissions.hasPermissions(this, perms)) {
-            // Already have permission, do the thing
-            // ...
-        } else {
-            // Do not have permissions, request them now
-            EasyPermissions.requestPermissions(this, "",
-                    12, perms);
-        }
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-
-        // Forward results to EasyPermissions
-        EasyPermissions.onRequestPermissionsResult(requestCode, permissions, grantResults, this);
-    }
-
-
-    @Override
-    public void onPermissionsGranted(int requestCode, List<String> perms) {
-
-    }
-
-    @Override
-    public void onPermissionsDenied(int requestCode, List<String> perms) {
-
-    }
     @Override
     protected void onResume() {
         super.onResume();

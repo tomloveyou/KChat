@@ -5,6 +5,7 @@ import android.util.Log;
 
 
 import com.google.gson.Gson;
+
 import com.yl.lenovo.kchat.KChatApp;
 import com.yl.lenovo.kchat.R;
 import com.yl.lenovo.kchat.bean.MyUser;
@@ -78,9 +79,7 @@ public class UserPresenter extends BasePresenterImpl implements UserContract.Use
             @Override
             public void done(MyUser bmobUser, BmobException e) {
                 if(e==null){
-                    KChatApp.getInstance().setBmobUser(bmobUser);
-                    ;
-                    SPUtils.put("userinfo",new Gson().toJson(bmobUser));
+
                     userLoginView.loginsuccess();
                     //通过BmobUser user = BmobUser.getCurrentUser()获取登录成功后的本地用户信息
                     //如果是自定义用户对象MyUser，可通过MyUser user = BmobUser.getCurrentUser(MyUser.class)获取自定义用户信息
@@ -90,6 +89,8 @@ public class UserPresenter extends BasePresenterImpl implements UserContract.Use
                     userLoginView.error(e.getMessage());
                 }
             }
+
+
         });
 
     }

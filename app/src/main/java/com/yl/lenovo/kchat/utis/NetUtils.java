@@ -33,7 +33,7 @@ public class NetUtils
     public static boolean isConnected(Context context)
     {
         if (context == null) {
-            L.d("传进来的context实例为空！");
+
         }
         ConnectivityManager connectivity = (ConnectivityManager) context
                 .getSystemService(Context.CONNECTIVITY_SERVICE);

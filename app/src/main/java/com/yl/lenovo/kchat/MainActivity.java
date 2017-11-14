@@ -3,25 +3,15 @@ package com.yl.lenovo.kchat;
 import android.Manifest;
 import android.app.Dialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
-import android.provider.MediaStore;
 import android.support.annotation.NonNull;
-import android.support.annotation.RequiresApi;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
-import android.support.v7.app.AlertDialog;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
-import android.view.Gravity;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.support.design.widget.NavigationView;
@@ -32,66 +22,52 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.ViewGroup;
 import android.view.animation.Animation;
-import android.widget.AbsListView;
-import android.widget.BaseAdapter;
+import android.view.animation.AnimationUtils;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.ListView;
-import android.widget.PopupWindow;
+import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.facebook.drawee.view.SimpleDraweeView;
-import com.google.gson.Gson;
-
-import com.lzy.imagepicker.bean.ImageItem;
-
-import com.lzy.widget.ExpandGridView;
 
 
+import com.othershe.nicedialog.BaseNiceDialog;
+import com.othershe.nicedialog.NiceDialog;
+import com.othershe.nicedialog.ViewConvertListener;
+import com.yl.lenovo.kchat.bean.Comment;
 import com.yl.lenovo.kchat.bean.Dynamic;
 import com.yl.lenovo.kchat.bean.MyUser;
-import com.yl.lenovo.kchat.bean.leadimg;
-import com.yl.lenovo.kchat.mvp.contract.FileContract;
-import com.yl.lenovo.kchat.mvp.contract.UserContract;
-import com.yl.lenovo.kchat.mvp.presenter.FilePresenterImpl;
-import com.yl.lenovo.kchat.mvp.presenter.UserPresenter;
 import com.yl.lenovo.kchat.stick.TravelActivity;
+import com.yl.lenovo.kchat.stick.util.ToastUtil;
 import com.yl.lenovo.kchat.stick.view.SmoothListView.SmoothListView;
-import com.yl.lenovo.kchat.utis.AppCacheDirUtil;
 import com.yl.lenovo.kchat.utis.DateUtil;
 import com.yl.lenovo.kchat.utis.SPUtils;
-import com.yl.lenovo.kchat.widget.CustomOperationPopWindow;
 
 import com.zhy.adapter.abslistview.CommonAdapter;
 import com.zhy.adapter.abslistview.ViewHolder;
 
 
-import java.io.BufferedOutputStream;
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 
-
-import cn.bingoogolapple.photopicker.activity.BGAPPToolbarActivity;
 import cn.bingoogolapple.photopicker.activity.BGAPhotoPreviewActivity;
-import cn.bingoogolapple.photopicker.imageloader.BGARVOnScrollListener;
 import cn.bingoogolapple.photopicker.widget.BGANinePhotoLayout;
 import cn.bmob.v3.BmobQuery;
-import cn.bmob.v3.datatype.BmobFile;
+import cn.bmob.v3.BmobUser;
+import cn.bmob.v3.datatype.BmobRelation;
 import cn.bmob.v3.exception.BmobException;
 import cn.bmob.v3.listener.FindListener;
-import cn.bmob.v3.listener.UploadBatchListener;
+import cn.bmob.v3.listener.SaveListener;
+import cn.bmob.v3.listener.UpdateListener;
 import pub.devrel.easypermissions.AfterPermissionGranted;
 import pub.devrel.easypermissions.EasyPermissions;
 
 public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener, SmoothListView.ISmoothListViewListener, BGANinePhotoLayout.Delegate,EasyPermissions.PermissionCallbacks {
+        implements NavigationView.OnNavigationItemSelectedListener, SmoothListView.ISmoothListViewListener, BGANinePhotoLayout.Delegate, EasyPermissions.PermissionCallbacks {
     private TextView tv_username, tv_email;
     private SimpleDraweeView iv_avator;
     private SmoothListView mMomentRv;
@@ -100,7 +76,7 @@ public class MainActivity extends AppCompatActivity
 
     private List<Dynamic> data = new ArrayList<>();
     private CommonAdapter<Dynamic> adapter;
-
+    private Dialog dialog;
     FloatingActionButton fab;
     private List<String> item_data = new ArrayList<>();
     private static final int REQUEST_CODE_PERMISSION_PHOTO_PREVIEW = 1;
@@ -112,6 +88,7 @@ public class MainActivity extends AppCompatActivity
     private int limit = 10; // 每页的数据是10条
     private int curPage = 0; // 当前页的编号，从0开始
 
+    boolean isFav;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -143,7 +120,7 @@ public class MainActivity extends AppCompatActivity
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity(new Intent(MainActivity.this, WxDemoActivity.class));
+                startActivity(new Intent(MainActivity.this, DynamicReleaseActivity.class));
             }
         });
         mMomentRv.setSmoothListViewListener(this);
@@ -151,19 +128,49 @@ public class MainActivity extends AppCompatActivity
 
         adapter = new CommonAdapter<Dynamic>(MainActivity.this, R.layout.item_dynamic_layout, data) {
             @Override
-            protected void convert(ViewHolder viewHolder, Dynamic item, int position) {
+            protected void convert(ViewHolder viewHolder, final Dynamic item, int position) {
                 if (TextUtils.isEmpty(item.getContent())) {
 
                     viewHolder.setVisible(R.id.item_dynamic_content, false);
                 } else {
                     viewHolder.setVisible(R.id.item_dynamic_content, true);
-                    viewHolder.setText(R.id.item_dynamic_title, item.getTitle());
-                    viewHolder.setText(R.id.item_dynamic_content, item.getContent());
-                    viewHolder.setText(R.id.item_dynamic_time, item.getCreatedAt());
-                    SimpleDraweeView imageView = viewHolder.getView(R.id.iv_item_moment_avatar);
-                    imageView.setImageURI(Uri.parse(item.getUser_avator()));
+
 
                 }
+                viewHolder.setText(R.id.item_dynamic_title, item.getTitle());
+                viewHolder.setText(R.id.item_dynamic_content, item.getContent());
+                viewHolder.setText(R.id.item_dynamic_time, item.getCreatedAt());
+                SimpleDraweeView imageView = viewHolder.getView(R.id.iv_item_moment_avatar);
+                imageView.setImageURI(Uri.parse(item.getUser_avator()));
+                viewHolder.setOnClickListener(R.id.iv_comment, new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        NiceDialog.init()
+                                .setLayoutId(R.layout.commit_layout)
+                                .setConvertListener(new ViewConvertListener() {
+
+                                    @Override
+                                    public void convertView(com.othershe.nicedialog.ViewHolder holder, final BaseNiceDialog dialog) {
+                                        final EditText editText = holder.getView(R.id.edit_input);
+                                        editText.post(new Runnable() {
+                                            @Override
+                                            public void run() {
+                                                InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                                                imm.showSoftInput(editText, 0);
+                                            }
+                                        });
+                                        holder.getView(R.id.tv_comment_publish).setOnClickListener(new View.OnClickListener() {
+                                            @Override
+                                            public void onClick(View v) {
+                                                pubComment(dialog,item, editText.getText().toString());
+                                            }
+                                        });
+                                    }
+                                })
+                                .setShowBottom(true)
+                                .show(getSupportFragmentManager());
+                    }
+                });
 
 
                 BGANinePhotoLayout ninePhotoLayout = viewHolder.getView(R.id.npl_item_moment_photos);
@@ -175,12 +182,12 @@ public class MainActivity extends AppCompatActivity
 
         navigationView.setNavigationItemSelectedListener(this);
 
-        if (KChatApp.getInstance().getBmobUser() != null) {
-            tv_email.setText(KChatApp.getInstance().getBmobUser().getEmail());
-            tv_username.setText(KChatApp.getInstance().getBmobUser().getUsername());
-
-            iv_avator.setImageURI(Uri.parse(KChatApp.getInstance().getBmobUser().getUser_avator() == null ? "http://ossweb-img.qq.com/upload/apps/ishow/176/thumb_1316413425_-1719592020_13323_sProdImgNo_1.jpg" : KChatApp.getInstance().getBmobUser().getUser_avator()));
-        }
+//        if (KChatApp.getInstance().getBmobUser() != null) {
+//            tv_email.setText(KChatApp.getInstance().getBmobUser().getEmail());
+//            tv_username.setText(KChatApp.getInstance().getBmobUser().getUsername());
+//
+//            iv_avator.setImageURI(Uri.parse(KChatApp.getInstance().getBmobUser().getUser_avator() == null ? "http://ossweb-img.qq.com/upload/apps/ishow/176/thumb_1316413425_-1719592020_13323_sProdImgNo_1.jpg" : KChatApp.getInstance().getBmobUser().getUser_avator()));
+//        }
         onRefresh();
 
     }
@@ -192,6 +199,45 @@ public class MainActivity extends AppCompatActivity
     }
 
 
+    private void onClickLove(final Dynamic dynamic) {
+        // TODO Auto-generated method stub
+        MyUser user = BmobUser.getCurrentUser(MyUser.class);
+        if (user == null) {
+            // 前往登录注册界面
+            ToastUtil.show(this, "请先登录。");
+            Intent intent = new Intent();
+            intent.setClass(this, LoginActivity.class);
+            startActivity(intent);
+            return;
+        }
+        if (dynamic.isMyLove()) {
+            ToastUtil.show(this, "您已经赞过啦");
+            return;
+        }
+        isFav = dynamic.isMyFav();
+        if (isFav) {
+            dynamic.setMyFav(false);
+        }
+        dynamic.setLove(dynamic.getLove() + 1);
+//        love.setTextColor(Color.parseColor("#D95555"));
+//        love.setText(dynamic.getLove() + "");
+        dynamic.increment("love", 1);
+        dynamic.update(new UpdateListener() {
+
+            @Override
+            public void done(BmobException e) {
+                dynamic.setMyLove(true);
+                dynamic.setMyFav(isFav);
+
+
+                ToastUtil.show(MainActivity.this, "点赞成功~");
+            }
+
+
+        });
+    }
+
+
     @Override
     public void onRefresh() {
         curPage = 1;
@@ -199,7 +245,9 @@ public class MainActivity extends AppCompatActivity
         adapter.notifyDataSetChanged();
         BmobQuery<Dynamic> query = new BmobQuery<Dynamic>();
         query.setLimit(limit);
-        query.addWhereEqualTo("ower",KChatApp.getInstance().getBmobUser().getObjectId());
+        query.order("createdAt");
+        MyUser user = BmobUser.getCurrentUser(MyUser.class);
+        query.addWhereEqualTo("ower", user.getObjectId());
         query.setSkip(curPage);
         query.findObjects(new FindListener<Dynamic>() {
             @Override
@@ -218,10 +266,11 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void onLoadMore() {
 
+        MyUser user = BmobUser.getCurrentUser(MyUser.class);
         BmobQuery<Dynamic> query = new BmobQuery<Dynamic>();
-        query.order("updatedAt");
         query.setLimit(limit);
-        query.addWhereEqualTo("ower",KChatApp.getInstance().getBmobUser().getObjectId());//查询当前登录用户的动态
+        query.order("createdAt");
+        query.addWhereEqualTo("ower", user.getObjectId());//查询当前登录用户的动态
         query.setSkip(curPage);
         query.findObjects(new FindListener<Dynamic>() {
             @Override
@@ -230,12 +279,12 @@ public class MainActivity extends AppCompatActivity
                     curPage += 10;
                     data.addAll(object);
                     adapter.notifyDataSetChanged();
-                    if (object.size()==0){
+                    if (object.size() == 0) {
                         //mMomentRv.setLoadEnd();
-                    }else {
+                    } else {
                         mMomentRv.stopLoadMore();
                     }
-                }else {
+                } else {
                     mMomentRv.stopLoadMore();
                 }
 
@@ -243,6 +292,72 @@ public class MainActivity extends AppCompatActivity
         });
     }
 
+    private void pubComment(final BaseNiceDialog dialog, final Dynamic dynamic, String content) {
+
+        MyUser user = BmobUser.getCurrentUser(MyUser.class);
+        final Comment comment = new Comment();
+        comment.setCommentContent(content);
+        comment.setUser(user);
+        comment.save(new SaveListener<String>() {
+
+            @Override
+            public void done(String objectId, BmobException e) {
+
+                if (e == null) {
+                    Log.i("bmob", "评论发表成功");
+                    BmobRelation relation = new BmobRelation();
+                    relation.add(comment);
+                    dynamic.setRelation(relation);
+                    dynamic.update(new UpdateListener() {
+                        @Override
+                        public void done(BmobException e) {
+                            dialog.dismiss();
+                        }
+                    });
+                } else {
+                    Log.i("bmob", "失败：" + e.getMessage());
+                }
+            }
+
+        });
+    }
+
+    protected Dialog createLoadingDialog(String msg, boolean isAnimation, int imageId) {
+
+        LayoutInflater inflater = LayoutInflater.from(this);
+        View v = inflater.inflate(R.layout.loading_layout, null);// 得到加载view
+        LinearLayout layout = (LinearLayout) v.findViewById(R.id.dialog_view);// 加载布局
+        // main.xml中的ImageView
+        ImageView spaceshipImage = (ImageView) v.findViewById(R.id.img_loading);
+        TextView tipTextView = (TextView) v.findViewById(R.id.tipTextView);// 提示文字
+
+        if (imageId != 0) {
+            spaceshipImage.setImageResource(imageId);
+        }
+        if (isAnimation) {
+            // 加载动画
+            Animation hyperspaceJumpAnimation = AnimationUtils.loadAnimation(
+                    this, R.anim.loading_animation);
+            // 使用ImageView显示动画
+            spaceshipImage.startAnimation(hyperspaceJumpAnimation);
+        }
+
+        if (TextUtils.isEmpty(msg)) {
+            tipTextView.setVisibility(View.GONE);
+        } else {
+            tipTextView.setVisibility(View.VISIBLE);
+            tipTextView.setText(msg);// 设置加载信息
+        }
+
+        Dialog loadingDialog = new Dialog(this, R.style.loading_dialog);// 创建自定义样式dialog
+
+        loadingDialog.setCancelable(true);// 不可以用“返回键”取消
+        loadingDialog.setContentView(layout, new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.MATCH_PARENT));// 设置布局
+        return loadingDialog;
+
+    }
 
     @Override
     public void onBackPressed() {
@@ -290,11 +405,11 @@ public class MainActivity extends AppCompatActivity
         } else if (id == R.id.nav_slideshow) {
             startActivity(new Intent(MainActivity.this, TravelActivity.class));
         } else if (id == R.id.nav_manage) {
-           // startActivity(new Intent(MainActivity.this, SettingsActivity.class));
+            // startActivity(new Intent(MainActivity.this, SettingsActivity.class));
         } else if (id == R.id.nav_share) {
 
         } else if (id == R.id.nav_send) {
-            SPUtils.remove("userinfo");
+
             startActivity(new Intent(MainActivity.this, LoginActivity.class));
             finish();
         }

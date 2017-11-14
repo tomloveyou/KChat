@@ -102,6 +102,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content" />
                 <ImageView
+                    android:id="@+id/iv_comment"
                     android:layout_marginLeft="4dp"
                     android:layout_marginRight="4dp"
                     android:src="@drawable/ic_sms_gray_24dp"

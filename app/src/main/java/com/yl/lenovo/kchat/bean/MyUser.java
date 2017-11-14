@@ -2,6 +2,7 @@ package com.yl.lenovo.kchat.bean;
 
 import cn.bmob.v3.BmobUser;
 import cn.bmob.v3.datatype.BmobFile;
+import cn.bmob.v3.datatype.BmobRelation;
 
 /**
  * Created by lenovo on 2017/7/4.
@@ -11,6 +12,15 @@ public class MyUser extends BmobUser {
     private int sex;
     private String user_avator;
     private String nickname;
+    private BmobRelation favorite;
+
+    public BmobRelation getFavorite() {
+        return favorite;
+    }
+
+    public void setFavorite(BmobRelation favorite) {
+        this.favorite = favorite;
+    }
 
     public String getNickname() {
         return nickname;

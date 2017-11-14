@@ -40,6 +40,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.facebook.drawee.view.SimpleDraweeView;
 import com.yl.lenovo.kchat.bean.SplashAndLogin;
 import com.yl.lenovo.kchat.mvp.contract.UserContract;
 import com.yl.lenovo.kchat.mvp.presenter.UserPresenter;
@@ -70,19 +71,25 @@ public class RegistActivity extends AppCompatActivity implements UserContract.Us
     private AutoCompleteTextView mEmailView;
     private EditText mPasswordView;
     private EditText mPasswordView_comfirm;
-    private View mProgressView;
-    private View mLoginFormView;
+
     private UserContract.UserPresenter presenter = new UserPresenter(this);
-    private ImageView imageView;
-    private SQLiteDatabase db;
-    private  Cursor cursor;
+    private SimpleDraweeView imageView;
+    private String path;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_regist);
         // Set up the login form.
         mEmailView = (AutoCompleteTextView) findViewById(R.id.email);
-        imageView = (ImageView) findViewById(R.id.login_background_img);
+        imageView = (SimpleDraweeView) findViewById(R.id.login_background_img);
+        path = (String) SPUtils.get("local_login_url", "");
+        Bitmap bitmap = null;
+        if ("".equals(path)) {
+            bitmap = BitmapFactory.decodeResource(getResources(), R.mipmap.splash);
+        } else {
+            bitmap = BitmapFactory.decodeFile(path);
+        }
+        imageView.setImageBitmap(bitmap);
 
         mPasswordView = (EditText) findViewById(R.id.password);
         mPasswordView_comfirm = (EditText) findViewById(R.id.password_comfirm);
@@ -111,33 +118,6 @@ public class RegistActivity extends AppCompatActivity implements UserContract.Us
             }
         });
 
-        mLoginFormView = findViewById(R.id.login_form);
-        mProgressView = findViewById(R.id.login_progress);
-        MyDatabaseStartImgHelper databaseStartImgHelper = new MyDatabaseStartImgHelper(this, "firstinit.db", null, 1);
-        db = databaseStartImgHelper.getWritableDatabase("5123789");
-        cursor = db.query("StartImg", new String[]{"local_login_url","login_url"}, null, null, null, null, null);
-
-        if (cursor != null) {
-            if (cursor.moveToNext()) {
-                String path = cursor.getString(0);
-                Bitmap bitmap = null;
-                if (path != null) {
-                    bitmap = BitmapFactory.decodeFile(path);
-                } else {
-                    bitmap = BitmapFactory.decodeResource(getResources(), R.mipmap.splash);
-                }
-                Drawable drawable = new BitmapDrawable(null, bitmap);
-                getWindow().setBackgroundDrawable(drawable);
-            } else {
-                Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.bg_btn_trans_round_n);
-                Drawable drawable = new BitmapDrawable(null, bitmap);
-                getWindow().setBackgroundDrawable(drawable);
-            }
-        } else {
-            Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.bg_btn_trans_round_n);
-            Drawable drawable = new BitmapDrawable(null, bitmap);
-            getWindow().setBackgroundDrawable(drawable);
-        }
         getImgData();
 
     }
@@ -155,14 +135,8 @@ public class RegistActivity extends AppCompatActivity implements UserContract.Us
             @Override
             public void done(String savePath, BmobException e) {
                 if (e == null) {
-                    ContentValues values = new ContentValues();
-                    values.put("local_login_url", savePath);
 
-                    if (cursor.moveToNext()){
-                        db.insert("StartImg", null,values);
-                    }else {
-                        db.update("StartImg", values,null ,null);
-                    }
+                    SPUtils.put("local_login_url", savePath);
 
 
 
@@ -189,46 +163,23 @@ public class RegistActivity extends AppCompatActivity implements UserContract.Us
             @Override
             public void done(SplashAndLogin object, BmobException e) {
                 if (e == null) {
-
-                    if (cursor.moveToNext()) {
-                        if (!object.getLogin_url().getFileUrl().equals(cursor.getString(1))) {
-                            ContentValues values = new ContentValues();
-                            values.put("login_url", object.getLogin_url().getFileUrl());
-                            db.update("StartImg", values,null,null);
-                            BmobFile bmobfile = new BmobFile("login_img.jpg", "", object.getLogin_url().getFileUrl());
-                            downloadFile(bmobfile);
+                    String origin = (String) SPUtils.get("login_url", null);
+                    if (origin != null) {
+                        if (!origin.equals(object.getLogin_url().getFileUrl())) {
+                            SPUtils.put("login_url", object.getLogin_url().getFileUrl());
+                            downloadFile(new BmobFile("local_login_url", null, object.getLogin_url().getFileUrl()));
+                            imageView.setImageURI(Uri.parse(object.getLogin_url().getFileUrl()));
                         }
                     } else {
-                        ContentValues values = new ContentValues();
-                        values.put("login_url", object.getLogin_url().getFileUrl());
-                        db.insert("StartImg", null, values);
-                        BmobFile bmobfile = new BmobFile("login_img.jpg", "", object.getLogin_url().getFileUrl());
-                        downloadFile(bmobfile);
+                        SPUtils.put("login_url", object.getLogin_url().getFileUrl());
+                        imageView.setImageURI(Uri.parse(object.getLogin_url().getFileUrl()));
+                        downloadFile(new BmobFile("local_login_url", null, object.getLogin_url().getFileUrl()));
 
                     }
-                    Glide.with(RegistActivity.this).load(object.getLogin_url().getFileUrl()).into(imageView);
-
 
 
                 } else {
-                    String img_path = null;
 
-                    try {
-                        img_path = cursor.getString(1);
-                    } catch (Exception e1) {
-                        img_path = null;
-                        Bitmap bitmap = BitmapFactory.decodeFile(cursor.getString(0));
-                        imageView.setImageBitmap(bitmap);
-                    }
-
-                    if (img_path == null) {
-                        Bitmap bitmap = BitmapFactory.decodeFile(cursor.getString(0));
-                        imageView.setImageBitmap(bitmap);
-
-                        // Picasso.with(SplashActivity.this).load(R.mipmap.smoothlistview_arrow).into(imageView);
-                    } else {
-                        Glide.with(RegistActivity.this).load(img_path).into(imageView);
-                    }
 
 
                 }

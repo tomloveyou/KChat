@@ -6,7 +6,7 @@
     android:orientation="vertical"
 
     tools:context="com.yl.lenovo.kchat.RegistActivity">
-    <ImageView
+    <com.facebook.drawee.view.SimpleDraweeView
         android:id="@+id/login_background_img"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

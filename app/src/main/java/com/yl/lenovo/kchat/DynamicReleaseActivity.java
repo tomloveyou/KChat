@@ -1,16 +1,14 @@
 package com.yl.lenovo.kchat;
 
+import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.view.menu.MenuBuilder;
 
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.EditText;
 
 import com.lzy.imagepicker.ImagePicker;
@@ -19,19 +17,18 @@ import com.lzy.imagepicker.ui.ImageGridActivity;
 import com.lzy.imagepicker.ui.ImagePreviewDelActivity;
 import com.lzy.imagepicker.view.CropImageView;
 import com.yl.lenovo.kchat.bean.Dynamic;
+import com.yl.lenovo.kchat.bean.MyUser;
 import com.yl.lenovo.kchat.utis.GlideImageLoader;
-import com.yl.lenovo.kchat.widget.dialog.DialogUtils;
 
 
 import java.util.ArrayList;
 import java.util.List;
 
-import cn.bingoogolapple.photopicker.activity.BGAPPToolbarActivity;
+import cn.bmob.v3.BmobUser;
 import cn.bmob.v3.datatype.BmobFile;
 import cn.bmob.v3.exception.BmobException;
 import cn.bmob.v3.listener.SaveListener;
 import cn.bmob.v3.listener.UploadBatchListener;
-
 
 
 /**
@@ -43,7 +40,7 @@ import cn.bmob.v3.listener.UploadBatchListener;
  * 修订历史：微信图片选择的Adapter, 感谢 ikkong 的提交
  * ================================================
  */
-public class WxDemoActivity extends BGAPPToolbarActivity implements ImagePickerAdapter.OnRecyclerViewItemClickListener {
+public class DynamicReleaseActivity extends BaseActvity implements ImagePickerAdapter.OnRecyclerViewItemClickListener {
     ArrayList<ImageItem> images = new ArrayList<>();
     public static final int IMAGE_ITEM_ADD = -1;
     public static final int REQUEST_CODE_SELECT = 100;
@@ -52,7 +49,8 @@ public class WxDemoActivity extends BGAPPToolbarActivity implements ImagePickerA
     private ImagePickerAdapter adapter;
     private ArrayList<ImageItem> selImageList; //当前选择的所有图片
     private int maxImgCount = 8;               //允许选择图片最大数
-
+    private Dialog dialog;
+    MyUser user = BmobUser.getCurrentUser(MyUser.class);
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.dynamic_release_manu, menu);
@@ -61,36 +59,35 @@ public class WxDemoActivity extends BGAPPToolbarActivity implements ImagePickerA
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()){
+        switch (item.getItemId()) {
             case R.id.action_release:
-                final List<String>filePaths=new ArrayList<>();
-                for (ImageItem imageItem:images){
+                final List<String> filePaths = new ArrayList<>();
+                for (ImageItem imageItem : images) {
                     filePaths.add(imageItem.path);
                 }
+                dialog = createLoadingDialog("发布中，别急嘛……", true, 0);
+                dialog.show();
                 BmobFile.uploadBatch(filePaths.toArray(new String[filePaths.size()]), new UploadBatchListener() {
 
                     @Override
                     public void onSuccess(List<BmobFile> files, List<String> urls) {
                         //1、files-上传完成后的BmobFile集合，是为了方便大家对其上传后的数据进行操作，例如你可以将该文件保存到表中
                         //2、urls-上传文件的完整url地址
-                        Dynamic dynamic=new Dynamic();
+                        Dynamic dynamic = new Dynamic();
                         dynamic.setImg_list(urls);
-                        dynamic.setTitle(KChatApp.getInstance().getBmobUser().getNickname());
+                        dynamic.setTitle(user.getNickname());
                         dynamic.setContent(mContentEt.getText().toString());
-                        dynamic.setUser_avator(KChatApp.getInstance().getBmobUser().getUser_avator());
-                        dynamic.setOwer(KChatApp.getInstance().getBmobUser().getObjectId());
+                        dynamic.setUser_avator(user.getUser_avator());
+                        dynamic.setOwer(user.getObjectId());
                         dynamic.save(new SaveListener<String>() {
                             @Override
                             public void done(String s, BmobException e) {
-                                DialogUtils.dismiss();
+                                dialog.dismiss();
 
                                 finish();
                             }
                         });
-                        if(urls.size()!=filePaths.size()){//如果数量相等，则代表文件全部上传完成
-                            //do something
 
-                        }
                     }
 
                     @Override
@@ -99,7 +96,7 @@ public class WxDemoActivity extends BGAPPToolbarActivity implements ImagePickerA
                     }
 
                     @Override
-                    public void onProgress(int curIndex, int curPercent, int total,int totalPercent) {
+                    public void onProgress(int curIndex, int curPercent, int total, int totalPercent) {
                         //1、curIndex--表示当前第几个文件正在上传
                         //2、curPercent--表示当前上传文件的进度值（百分比）
                         //3、total--表示总的上传文件数
@@ -161,7 +158,7 @@ public class WxDemoActivity extends BGAPPToolbarActivity implements ImagePickerA
         switch (position) {
             case IMAGE_ITEM_ADD:
                 ImagePicker.getInstance().setSelectLimit(maxImgCount - selImageList.size());
-                Intent intent1 = new Intent(WxDemoActivity.this, ImageGridActivity.class);
+                Intent intent1 = new Intent(DynamicReleaseActivity.this, ImageGridActivity.class);
                                 /* 如果需要进入选择的时候显示已经选中的图片，
                                  * 详情请查看ImagePickerActivity
                                  * */
@@ -180,7 +177,6 @@ public class WxDemoActivity extends BGAPPToolbarActivity implements ImagePickerA
                 break;
         }
     }
-
 
 
     @Override

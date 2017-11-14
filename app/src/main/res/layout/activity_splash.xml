@@ -6,9 +6,10 @@
     android:layout_height="match_parent"
     tools:context="com.yl.lenovo.kchat.SplashActivity">
 
-    <ImageView
+    <com.facebook.drawee.view.SimpleDraweeView
         android:id="@+id/image_splash_background"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+
         android:scaleType="centerCrop" />
 </LinearLayout>

@@ -9,6 +9,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.v4.content.ContextCompat;
@@ -18,6 +19,7 @@ import android.view.WindowManager;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
+import com.facebook.drawee.view.SimpleDraweeView;
 import com.google.gson.Gson;
 
 import com.yl.lenovo.kchat.bean.SplashAndLogin;
@@ -43,7 +45,7 @@ import pub.devrel.easypermissions.AfterPermissionGranted;
 import pub.devrel.easypermissions.EasyPermissions;
 
 public class SplashActivity extends Activity {
-    private ImageView imageView;
+    private SimpleDraweeView imageView;
     private String path;
 
     @Override
@@ -52,20 +54,10 @@ public class SplashActivity extends Activity {
         // 判断是否是第一次开启应用
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         path = (String) SPUtils.get("local_splash_url", "");
-        Bitmap bitmap = null;
-        if ("".equals(path)) {
-            bitmap = BitmapFactory.decodeResource(getResources(), R.mipmap.splash);
-        } else {
-            bitmap = BitmapFactory.decodeFile(path);
-        }
-        Drawable drawable = new BitmapDrawable(null, bitmap);
-        getWindow().setBackgroundDrawable(drawable);
-
-
-        boolean isFirstOpen = (boolean) SPUtils.get("FIRST_OPEN", false);
+        boolean isFirstOpen = (boolean) SPUtils.get("FIRST_OPEN", true);
 
         // 如果是第一次启动，则先进入功能引导页
-        if (!isFirstOpen) {
+        if (isFirstOpen) {
 
             Intent intent = new Intent(this, WelcomeGuideActivity.class);
             startActivity(intent);
@@ -76,7 +68,8 @@ public class SplashActivity extends Activity {
 
         }
         setContentView(R.layout.activity_splash);
-        imageView = (ImageView) findViewById(R.id.image_splash_background);
+        imageView = (SimpleDraweeView) findViewById(R.id.image_splash_background);
+        imageView.setImageURI(Uri.parse(path));
         getImgData();
 
 
@@ -96,7 +89,7 @@ public class SplashActivity extends Activity {
             public void done(String savePath, BmobException e) {
                 if (e == null) {
 
-                    SPUtils.put( "local_splash_url", savePath);
+                    SPUtils.put("local_splash_url", savePath);
 
                     //toast("下载成功,保存路径:"+savePath);
                 }
@@ -126,11 +119,40 @@ public class SplashActivity extends Activity {
             @Override
             public void done(SplashAndLogin object, BmobException e) {
                 if (e == null) {
+                    String origin = (String) SPUtils.get("splash_url", null);
+                    if (origin != null) {
+                        if (!origin.equals(object.getSplash_url().getFileUrl())) {
+                            SPUtils.put("splash_url", object.getSplash_url().getFileUrl());
+                            imageView.setImageURI(object.getSplash_url().getFileUrl());
+                            downloadFile(new BmobFile("local_splash_url", null, object.getSplash_url().getFileUrl()));
 
-                    SPUtils.put( "local_splash_url", object.getSplash_url().getFileUrl());
-                    Glide.with(SplashActivity.this).load(object.getSplash_url().getFileUrl()).into(imageView);
+                        }else {
+                            imageView.postDelayed(new Runnable() {
+                                @Override
+                                public void run() {
+                                    startActivity(new Intent(SplashActivity.this, LoginActivity.class));
+                                    finish();
+                                }
+                            }, 2000);
+                        }
+                    } else {
+                        SPUtils.put("splash_url", object.getSplash_url().getFileUrl());
+                        imageView.setImageURI(object.getSplash_url().getFileUrl());
+                        downloadFile(new BmobFile("local_splash_url", null, object.getSplash_url().getFileUrl()));
+
+                    }
 
 
+
+
+                } else {
+                    imageView.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            startActivity(new Intent(SplashActivity.this, LoginActivity.class));
+                            finish();
+                        }
+                    }, 2000);
                 }
 
             }

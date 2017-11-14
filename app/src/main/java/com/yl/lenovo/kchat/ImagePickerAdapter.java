@@ -6,7 +6,6 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.lzy.imagepicker.ImagePicker;
@@ -96,7 +95,7 @@ public class ImagePickerAdapter extends RecyclerView.Adapter<ImagePickerAdapter.
             ImageItem item = mData.get(position);
             if (isAdded && position == getItemCount() - 1) {
                 iv_img.setImageResource(R.drawable.selector_image_add);
-                clickPosition = WxDemoActivity.IMAGE_ITEM_ADD;
+                clickPosition = DynamicReleaseActivity.IMAGE_ITEM_ADD;
             } else {
                 ImagePicker.getInstance().getImageLoader().displayImage((Activity) mContext, item.path, iv_img, 0, 0);
                 clickPosition = position;
